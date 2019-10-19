@@ -1,10 +1,9 @@
 package com.cg.BankingSystem.dto;
 
-public class request {
+public class Request {
 
 	private int requestNo;
-	private String status;
-	
+	private int status;
 	
 	public int getRequestNo() {
 		return requestNo;
@@ -12,10 +11,10 @@ public class request {
 	public void setRequestNo(int requestNo) {
 		this.requestNo = requestNo;
 	}
-	public String getStatus() {
+	public int getStatus() {
 		return status;
 	}
-	public void setStatus(String status) {
+	public void setStatus(int status) {
 		this.status = status;
 	}
 	

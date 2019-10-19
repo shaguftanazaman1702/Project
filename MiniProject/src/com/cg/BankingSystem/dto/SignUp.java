@@ -1,15 +1,21 @@
 package com.cg.BankingSystem.dto;
 
-public class login {
+public class SignUp {
 
+	private long accNo;
 	private String name;
 	private String address;
 	private long mobileNo;
 	private String email;
 	private String accType;
 	private int openingBal;
-	
-	
+
+	public long getAccNo() {
+		return accNo;
+	}
+	public void setAccNo(long accNo) {
+		this.accNo = accNo;
+	}
 	public String getName() {
 		return name;
 	}

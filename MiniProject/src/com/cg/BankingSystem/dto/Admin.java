@@ -1,6 +1,6 @@
 package com.cg.BankingSystem.dto;
 
-public class admin {
+public class Admin {
 
 	private int numberOfRequest;
 	private String customerId;

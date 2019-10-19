@@ -1,6 +1,6 @@
 package com.cg.BankingSystem.dto;
 
-public class request {
+public class Request {
 
 	private int requestNo;
 	private String status;

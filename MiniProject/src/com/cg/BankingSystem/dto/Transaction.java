@@ -2,7 +2,7 @@ package com.cg.BankingSystem.dto;
 
 import java.util.Date;
 
-public class transaction {
+public class Transaction {
 
 	private Date transactionDate;
 	private double transactionAmount;

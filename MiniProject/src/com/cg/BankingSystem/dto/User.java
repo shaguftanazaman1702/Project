@@ -1,6 +1,6 @@
 package com.cg.BankingSystem.dto;
 
-public class user {
+public class User {
 
 	private String userid;
 	private String password;

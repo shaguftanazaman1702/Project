@@ -9,7 +9,7 @@ public interface BankingSystemDao<T> {
 
 	T authenticateUser(LoginBean bean);
 	
-	List<Transaction> listTransactions(long accountNumber);
+	List<Transaction> listTransactions(long accountNumber) throws Exception;
 	
 	boolean updatePassword(String newPassword);
 	

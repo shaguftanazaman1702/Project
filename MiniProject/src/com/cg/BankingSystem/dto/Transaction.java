@@ -1,15 +1,15 @@
 package com.cg.BankingSystem.dto;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Transaction {
 
-	private Date transactionDate;
+	private LocalDate transactionDate;
 	private double transactionAmount;
 	private String transactionType;
 	private int transactionID;
 	private long accountNo;
-	
+	private String transactionDescription;
 	
 	public String getTransactionType() {
 		return transactionType;
@@ -29,10 +29,10 @@ public class Transaction {
 	public void setAccountNo(long accountNo) {
 		this.accountNo = accountNo;
 	}
-	public Date getTransactionDate() {
+	public LocalDate getTransactionDate() {
 		return transactionDate;
 	}
-	public void setTransactionDate(Date transactionDate) {
+	public void setTransactionDate(LocalDate transactionDate) {
 		this.transactionDate = transactionDate;
 	}
 	public double getTransactionAmount() {
@@ -41,5 +41,10 @@ public class Transaction {
 	public void setTransactionAmount(double transactionAmount) {
 		this.transactionAmount = transactionAmount;
 	}
-	
+	public String getTransactionDescription() {
+		return transactionDescription;
+	}
+	public void setTransactionDescription(String transactionDescription) {
+		this.transactionDescription = transactionDescription;
+	}	
 }

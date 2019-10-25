@@ -6,11 +6,12 @@ public class Customer {
 
 	private String userId;
 	private String password;
-	private long accountNo;
+	private long accountNumber;
 	private String name;
 	private String address;
-	private String mobileNo;
+	private String mobileNumber;
 	private String emailId;
+	private String panCardNumber;
 	private String accountType;
 	private int balance;
 	private List<Request> requests;
@@ -28,11 +29,11 @@ public class Customer {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public long getAccountNo() {
-		return accountNo;
+	public long getAccountNumber() {
+		return accountNumber;
 	}
-	public void setAccountNo(long accountNo) {
-		this.accountNo = accountNo;
+	public void setAccountNumber(long accountNo) {
+		this.accountNumber = accountNo;
 	}
 	public String getName() {
 		return name;
@@ -47,10 +48,10 @@ public class Customer {
 		this.address = address;
 	}
 	public String getMobileNo() {
-		return mobileNo;
+		return mobileNumber;
 	}
 	public void setMobileNo(String mobileNo) {
-		this.mobileNo = mobileNo;
+		this.mobileNumber = mobileNo;
 	}
 	public String getEmailId() {
 		return emailId;
@@ -81,6 +82,12 @@ public class Customer {
 	}
 	public void setTransactions(List<Transaction> transactions) {
 		this.transactions = transactions;
+	}
+	public String getPanCardNumber() {
+		return panCardNumber;
+	}
+	public void setPanCardNumber(String panCardNumber) {
+		this.panCardNumber = panCardNumber;
 	}
 	
 }

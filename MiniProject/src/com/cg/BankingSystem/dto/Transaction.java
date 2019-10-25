@@ -6,15 +6,28 @@ public class Transaction {
 
 	private Date transactionDate;
 	private double transactionAmount;
-	private String bankName;
-	private int numOfRequest;
+	private String transactionType;
+	private int transactionID;
+	private long accountNo;
 	
 	
-	public int getNumOfRequest() {
-		return numOfRequest;
+	public String getTransactionType() {
+		return transactionType;
 	}
-	public void setNumOfRequest(int numOfRequest) {
-		this.numOfRequest = numOfRequest;
+	public void setTransactionType(String transactionType) {
+		this.transactionType = transactionType;
+	}
+	public int getTransactionID() {
+		return transactionID;
+	}
+	public void setTransactionID(int transactionID) {
+		this.transactionID = transactionID;
+	}
+	public long getAccountNo() {
+		return accountNo;
+	}
+	public void setAccountNo(long accountNo) {
+		this.accountNo = accountNo;
 	}
 	public Date getTransactionDate() {
 		return transactionDate;
@@ -28,12 +41,5 @@ public class Transaction {
 	public void setTransactionAmount(double transactionAmount) {
 		this.transactionAmount = transactionAmount;
 	}
-	public String getBankName() {
-		return bankName;
-	}
-	public void setBankName(String bankName) {
-		this.bankName = bankName;
-	}
-	
 	
 }

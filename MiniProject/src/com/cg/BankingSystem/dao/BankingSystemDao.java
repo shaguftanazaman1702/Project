@@ -13,4 +13,19 @@ public interface BankingSystemDao<T> {
 	
 	boolean updatePassword(String newPassword);
 	
+	public static enum Queries {
+		GET_TRANSACTIONS_QUERY ("SELECT * FROM TRANSACTIONS WHERE acoount_id = ?");
+		
+		private String query;
+		
+		private Queries(String query) {
+
+			this.query = query;
+		}
+		
+		public String getValue() {
+			return this.query;
+		}
+	}
+	
 }

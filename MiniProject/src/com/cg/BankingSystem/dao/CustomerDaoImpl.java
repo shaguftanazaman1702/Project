@@ -2,13 +2,14 @@ package com.cg.BankingSystem.dao;
 
 import java.util.List;
 
+import com.cg.BankingSystem.dto.Customer;
 import com.cg.BankingSystem.dto.LoginBean;
 import com.cg.BankingSystem.dto.Transaction;
 
-public class CustomerDaoImpl<T> implements CustomerDao<T> {
+public class CustomerDaoImpl implements CustomerDao {
 
 	@Override
-	public T authenticateUser(LoginBean bean) {
+	public Customer authenticateUser(LoginBean bean) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -20,7 +21,7 @@ public class CustomerDaoImpl<T> implements CustomerDao<T> {
 	}
 
 	@Override
-	public boolean updatePassword(String newPassword) {
+	public boolean updatePassword(String newPassword, String userId) {
 		// TODO Auto-generated method stub
 		return false;
 	}

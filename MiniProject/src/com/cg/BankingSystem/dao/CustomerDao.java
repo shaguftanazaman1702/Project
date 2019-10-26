@@ -1,6 +1,8 @@
 package com.cg.BankingSystem.dao;
 
-public interface CustomerDao<T> extends BankingSystemDao<T> {
+import com.cg.BankingSystem.dto.Customer;
+
+public interface CustomerDao extends BankingSystemDao<Customer> {
 
 	boolean changeContactNumber(String newNumber);
 	

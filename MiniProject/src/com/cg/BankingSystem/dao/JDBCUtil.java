@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.cg.BankingSystem.dao;
 
 import java.io.FileReader;
@@ -32,10 +29,6 @@ public class JDBCUtil {
 		String url = p.getProperty("url");
 		String user = p.getProperty("user");
 		String pass = p.getProperty("pass");
-		// String url = "jdbc:oracle:thin:@localhost:1521:xe";
-		// String user = "Panja";
-		// String pass = "oracle";
-		// registering driver with driver manager
 		try {
 			Class.forName(driver);
 		} catch (ClassNotFoundException e) {

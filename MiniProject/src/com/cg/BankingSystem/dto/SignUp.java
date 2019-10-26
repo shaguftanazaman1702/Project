@@ -5,10 +5,14 @@ public class SignUp {
 	private long accNo;
 	private String name;
 	private String address;
-	private long mobileNo;
+	private String mobileNo;
 	private String email;
-	private AccountType accType;
+	private AccountType accountType;
 	private int openingBal;
+	private String panCardNumber;
+	private String userId;
+	private String password;
+	private String transactionPassword;
 
 	public long getAccNo() {
 		return accNo;
@@ -28,10 +32,10 @@ public class SignUp {
 	public void setAddress(String address) {
 		this.address = address;
 	}
-	public long getMobileNo() {
+	public String getMobileNo() {
 		return mobileNo;
 	}
-	public void setMobileNo(long mobileNo) {
+	public void setMobileNo(String mobileNo) {
 		this.mobileNo = mobileNo;
 	}
 	public String getEmail() {
@@ -40,11 +44,11 @@ public class SignUp {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public AccountType getAccType() {
-		return accType;
+	public AccountType getAccountType() {
+		return accountType;
 	}
-	public void setAccType(AccountType accType) {
-		this.accType = accType;
+	public void setAccountType(AccountType accountType) {
+		this.accountType = accountType;
 	}
 	public int getOpeningBal() {
 		return openingBal;
@@ -52,8 +56,29 @@ public class SignUp {
 	public void setOpeningBal(int openingBal) {
 		this.openingBal = openingBal;
 	}
-	
-	
-	
+	public String getPanCardNumber() {
+		return panCardNumber;
+	}
+	public void setPanCardNumber(String panCardNumber) {
+		this.panCardNumber = panCardNumber;
+	}
+	public String getUserId() {
+		return userId;
+	}
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	public String getTransactionPassword() {
+		return transactionPassword;
+	}
+	public void setTransactionPassword(String transactionPassword) {
+		this.transactionPassword = transactionPassword;
+	}
 	
 }

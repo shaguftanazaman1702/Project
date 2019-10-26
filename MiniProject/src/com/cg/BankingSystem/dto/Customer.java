@@ -13,6 +13,7 @@ public class Customer {
 	private String emailId;
 	private String panCardNumber;
 	private AccountType accountType;
+	private String transactionPassword;
 	private int balance;
 	private List<Request> requests;
 	private List<Transaction> transactions;
@@ -88,6 +89,18 @@ public class Customer {
 	}
 	public void setPanCardNumber(String panCardNumber) {
 		this.panCardNumber = panCardNumber;
+	}
+	public String getMobileNumber() {
+		return mobileNumber;
+	}
+	public void setMobileNumber(String mobileNumber) {
+		this.mobileNumber = mobileNumber;
+	}
+	public String getTransactionPassword() {
+		return transactionPassword;
+	}
+	public void setTransactionPassword(String transactionPassword) {
+		this.transactionPassword = transactionPassword;
 	}
 	
 }

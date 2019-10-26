@@ -2,22 +2,23 @@ package com.cg.BankingSystem.dto;
 
 public class Admin {
 
-	private int numberOfRequest;
-	private String customerId;
+	private String userId;
+	private String userName;
 	
-	public int getNumberOfRequest() {
-		return numberOfRequest;
-	}
-	public void setNumberOfRequest(int numberOfRequest) {
-		this.numberOfRequest = numberOfRequest;
-	}
-	public String getCustomerId() {
-		return customerId;
-	}
-	public void setCustomerId(String customerId) {
-		this.customerId = customerId;
+	public String getUserId() {
+		return userId;
 	}
 	
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 	
+	public String getUserName() {
+		return userName;
+	}
 	
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
 }

@@ -9,4 +9,8 @@ public enum AccountType {
 	AccountType(String typeCode) {
 		this.typeCode = typeCode;
 	}
+	
+	public String getValue() {
+		return typeCode;
+	}
 }

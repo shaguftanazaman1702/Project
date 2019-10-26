@@ -15,7 +15,6 @@ public class AdminDaoImpl<T> implements AdminDao<T> {
 
 	@Override
 	public T authenticateUser(LoginBean bean) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -26,7 +25,7 @@ public class AdminDaoImpl<T> implements AdminDao<T> {
 
 		try {
 			conn = JDBCUtil.getConnection();
-			PreparedStatement stmt = conn.prepareStatement(getTransactionsQuery);
+			PreparedStatement stmt = conn.prepareStatement(BankingSystemDao.Queries.GET_TRANSACTIONS_QUERY);
 			stmt.setLong(1, accountNumber);
 			//date from to
 			

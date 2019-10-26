@@ -7,7 +7,7 @@ public class SignUp {
 	private String address;
 	private long mobileNo;
 	private String email;
-	private String accType;
+	private AccountType accType;
 	private int openingBal;
 
 	public long getAccNo() {
@@ -40,10 +40,10 @@ public class SignUp {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public String getAccType() {
+	public AccountType getAccType() {
 		return accType;
 	}
-	public void setAccType(String accType) {
+	public void setAccType(AccountType accType) {
 		this.accType = accType;
 	}
 	public int getOpeningBal() {

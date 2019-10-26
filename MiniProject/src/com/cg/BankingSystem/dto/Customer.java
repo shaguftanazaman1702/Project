@@ -12,7 +12,7 @@ public class Customer {
 	private String mobileNumber;
 	private String emailId;
 	private String panCardNumber;
-	private String accountType;
+	private AccountType accountType;
 	private int balance;
 	private List<Request> requests;
 	private List<Transaction> transactions;
@@ -59,10 +59,10 @@ public class Customer {
 	public void setEmailId(String emailId) {
 		this.emailId = emailId;
 	}
-	public String getAccountType() {
+	public AccountType getAccountType() {
 		return accountType;
 	}
-	public void setAccountType(String accountType) {
+	public void setAccountType(AccountType accountType) {
 		this.accountType = accountType;
 	}
 	public int getBalance() {

@@ -6,15 +6,15 @@ public class Transaction {
 
 	private LocalDate transactionDate;
 	private double transactionAmount;
-	private String transactionType;
+	private TransactionType transactionType;
 	private int transactionID;
 	private long accountNo;
 	private String transactionDescription;
 	
-	public String getTransactionType() {
+	public TransactionType getTransactionType() {
 		return transactionType;
 	}
-	public void setTransactionType(String transactionType) {
+	public void setTransactionType(TransactionType transactionType) {
 		this.transactionType = transactionType;
 	}
 	public int getTransactionID() {

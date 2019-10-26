@@ -2,18 +2,18 @@ package com.cg.BankingSystem.dto;
 
 import java.time.LocalDate;
 
-public class Request {
+public class Service {
 
-	private int requestNumber;
+	private int serviceNumber;
 	private int status;
 	private long accountNumber;
-	private LocalDate requestDate;
+	private LocalDate serviceDate;
 	
-	public int getRequestNumber() {
-		return requestNumber;
+	public int getserviceNumber() {
+		return serviceNumber;
 	}
-	public void setRequestNumber(int requestNo) {
-		this.requestNumber = requestNo;
+	public void setserviceNumber(int serviceNo) {
+		this.serviceNumber = serviceNo;
 	}
 	public int getStatus() {
 		return status;
@@ -27,11 +27,11 @@ public class Request {
 	public void setAccountNumber(long accountNumber) {
 		this.accountNumber = accountNumber;
 	}
-	public LocalDate getRequestDate() {
-		return requestDate;
+	public LocalDate getserviceDate() {
+		return serviceDate;
 	}
-	public void setRequestDate(LocalDate requestDate) {
-		this.requestDate = requestDate;
+	public void setserviceDate(LocalDate serviceDate) {
+		this.serviceDate = serviceDate;
 	}
 	
 }

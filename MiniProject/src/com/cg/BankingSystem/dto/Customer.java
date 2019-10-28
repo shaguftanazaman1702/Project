@@ -14,24 +14,9 @@ public class Customer {
 	private String panCardNumber;
 	private AccountType accountType;
 	private String transactionPassword;
-	private int balance;
+	private double balance;
 	private List<Request> requests;
 	private List<Transaction> transactions;
-	private List<Payee> payees;
-
-	/**
-	 * @return the payees
-	 */
-	public List<Payee> getPayees() {
-		return payees;
-	}
-
-	/**
-	 * @param payees the payees to set
-	 */
-	public void setPayees(List<Payee> payees) {
-		this.payees = payees;
-	}
 
 	public String getUserId() {
 		return userId;
@@ -73,14 +58,6 @@ public class Customer {
 		this.address = address;
 	}
 
-	public String getMobileNo() {
-		return mobileNumber;
-	}
-
-	public void setMobileNo(String mobileNo) {
-		this.mobileNumber = mobileNo;
-	}
-
 	public String getEmailId() {
 		return emailId;
 	}
@@ -97,11 +74,11 @@ public class Customer {
 		this.accountType = accountType;
 	}
 
-	public int getBalance() {
+	public double getBalance() {
 		return balance;
 	}
 
-	public void setBalance(int balance) {
+	public void setBalance(double balance) {
 		this.balance = balance;
 	}
 
@@ -145,4 +122,10 @@ public class Customer {
 		this.transactionPassword = transactionPassword;
 	}
 
+	@Override
+	public String toString() {
+		return "Customer [userId=" + userId + ", accountNumber=" + accountNumber + ", name=" + name + ", address="
+				+ address + ", mobileNumber=" + mobileNumber + ", emailId=" + emailId + ", panCardNumber="
+				+ panCardNumber + ", accountType=" + accountType + ", balance=" + balance + "]";
+	}
 }

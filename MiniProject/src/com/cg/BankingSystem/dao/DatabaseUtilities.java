@@ -3,6 +3,7 @@ package com.cg.BankingSystem.dao;
 import java.sql.Date;
 import java.time.LocalDate;
 
+import com.cg.BankingSystem.dto.AccountType;
 import com.cg.BankingSystem.dto.TransactionType;
 
 public class DatabaseUtilities {
@@ -19,5 +20,11 @@ public class DatabaseUtilities {
 
 	public static Date getSQLDate(LocalDate date) {
 		return Date.valueOf(date);
+	}
+	
+	public static AccountType getAccountType(String rawType) {
+		if (rawType.equals("SAV"))
+			return AccountType.SAVINGS_ACCOUNT;
+		return AccountType.CURRENT_ACCOUNT;
 	}
 }

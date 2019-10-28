@@ -17,6 +17,7 @@ import com.cg.BankingSystem.exception.AccountNotCreatedException;
 import com.cg.BankingSystem.exception.InternalServerException;
 import com.cg.BankingSystem.exception.InvalidCredentialsException;
 import com.cg.BankingSystem.exception.NoTransactionsExistException;
+import com.cg.BankingSystem.exception.UserNotFoundException;
 
 public class AdminDaoImpl implements AdminDao {
 
@@ -204,6 +205,89 @@ public class AdminDaoImpl implements AdminDao {
 			throw new AccountNotCreatedException("Account couldn't be created, please try again later");
 		}
 		return accountNumber.getLong(1);
+	}
+
+	@Override
+	public Customer findCustomer(String userId) throws InternalServerException, UserNotFoundException {
+		Connection conn = null;
+		
+		try {
+			conn = JDBCUtil.getConnection();
+			PreparedStatement findUserStmt = conn.prepareStatement(BankingSystemDao.Queries.GET_USER_DETAILS_QUERY.getValue());
+			PreparedStatement findCustomerStmt = conn.prepareStatement(BankingSystemDao.Queries.GET_CUSTOMER_DETAILS_QUERY.getValue());
+			PreparedStatement findAccountStmt = conn.prepareStatement(BankingSystemDao.Queries.GET_ACCOUNT_DETAILS_QUERY.getValue());
+			
+			findUserStmt.setString(1, userId);
+			
+			ResultSet userDetails = findUserStmt.executeQuery();
+			
+			if (!userDetails.next())
+				throw new UserNotFoundException("No users found with ID: " + userId);
+			
+			findCustomerStmt.setLong(1, userDetails.getLong(5));
+			findAccountStmt.setLong(1, userDetails.getLong(5));
+			
+			ResultSet customerDetails = findCustomerStmt.executeQuery();
+			ResultSet accountDetails = findAccountStmt.executeQuery();
+			
+			if (!customerDetails.next() || !accountDetails.next())
+				throw new InternalServerException("Server is facing issues, please try again later.");
+			
+			Customer fetchedCustomer = new Customer();
+			
+			fetchedCustomer.setAccountNumber(accountDetails.getLong(1));
+			fetchedCustomer.setAccountType(DatabaseUtilities.getAccountType(accountDetails.getString(2)));
+			fetchedCustomer.setBalance(accountDetails.getDouble(3));
+			fetchedCustomer.setName(customerDetails.getString(2));
+			fetchedCustomer.setEmailId(customerDetails.getString(3));
+			fetchedCustomer.setAddress(customerDetails.getString(4));
+			fetchedCustomer.setPanCardNumber(customerDetails.getString(5));
+			fetchedCustomer.setMobileNumber(customerDetails.getString(6));
+			fetchedCustomer.setUserId(userDetails.getString(1));
+			fetchedCustomer.setPassword(userDetails.getString(2));
+			fetchedCustomer.setTransactionPassword(userDetails.getString(3));
+			
+			return fetchedCustomer;
+		} catch (SQLException e) {
+			throw new InternalServerException(e.getMessage());
+		} finally {
+			try {
+				if (conn != null)
+					conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Override
+	public boolean saveExistingUser(SignUp newCustomer) throws InternalServerException {
+		Connection conn = null;
+		
+		try {
+			conn = JDBCUtil.getConnection();
+			PreparedStatement saveUserStmt = conn.prepareStatement(BankingSystemDao.Queries.INSERT_EXISTING_ACCOUNT_QUERY.getValue());
+			
+			saveUserStmt.setLong(1, newCustomer.getAccountNumber());
+			saveUserStmt.setString(2, newCustomer.getAccountType().getValue());
+			saveUserStmt.setDouble(3, newCustomer.getOpeningBal());
+			saveUserStmt.setDate(4, DatabaseUtilities.getSQLDate(LocalDate.now()));
+			
+			int rowsAffected = saveUserStmt.executeUpdate();
+			
+			if (rowsAffected == 0)
+				return false;
+			return true;
+		} catch (SQLException e) {
+			throw new InternalServerException(e.getMessage());
+		} finally {
+			try {
+				if (conn != null)
+					conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 }

@@ -20,8 +20,10 @@ import com.cg.BankingSystem.exception.AccountNotCreatedException;
 import com.cg.BankingSystem.exception.InternalServerException;
 import com.cg.BankingSystem.exception.InvalidCredentialsException;
 import com.cg.BankingSystem.exception.NoTransactionsExistException;
+import com.cg.BankingSystem.service.AdminService;
 import com.cg.BankingSystem.service.AdminServiceImpl;
 import com.cg.BankingSystem.service.BankingSystemService;
+import com.cg.BankingSystem.service.CustomerService;
 import com.cg.BankingSystem.service.CustomerServiceImpl;
 
 /**
@@ -34,7 +36,8 @@ public class BankingSystemCli {
 	 * Static objects defined
 	 */
 	private static Scanner scanner;
-	private static AdminDao adminDao;
+	private static CustomerService customerService;
+	private static AdminService adminService;
 
 	/**
 	 * Static block, implements even before the main method
@@ -50,9 +53,10 @@ public class BankingSystemCli {
 	 * @throws AccountNotCreatedException
 	 * @throws InternalServerException
 	 * @throws InvalidCredentialsException
+	 * @throws NoTransactionsExistException 
 	 */
 	public static void main(String[] args)
-			throws InvalidCredentialsException, InternalServerException, AccountNotCreatedException {
+			throws InvalidCredentialsException, InternalServerException, AccountNotCreatedException, NoTransactionsExistException {
 		int userTypeChoice;
 		System.out.println("WELCOME TO BANKING SYSTEM!");
 		do {
@@ -228,7 +232,7 @@ public class BankingSystemCli {
 		newSignUp.setPassword(password);
 		newSignUp.setTransactionPassword(transactionPassword);
 
-		long newCustomerAccountNo = adminDao.createNewAccount(newSignUp);
+		long newCustomerAccountNo = adminService.createNewAccount(newSignUp);
 		System.out.println("New Account opened successfully with account no.: " + newCustomerAccountNo);
 
 	}
@@ -237,7 +241,7 @@ public class BankingSystemCli {
 
 		System.out.print("Enter customer account number : ");
 		long accountNumber = scanner.nextLong();
-		List<Transaction> Transactions = adminDao.listTransactions(accountNumber);
+		List<Transaction> Transactions = adminService.listTransactions(accountNumber);
 		System.out.println("List of transactions:-");
 		System.out.println("Account No.\t" + "Transaction ID\t" + "Transaction Date\t" + "Transaction Amount\t"
 				+ "Transaction Type\t" + "Transaction Description");
@@ -354,7 +358,7 @@ public class BankingSystemCli {
 	}
 
 	private static void FundTransfer() {
-		// TODO Auto-generated method stub
+		
 
 	}
 

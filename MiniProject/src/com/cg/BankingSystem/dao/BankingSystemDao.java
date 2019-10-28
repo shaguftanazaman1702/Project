@@ -11,32 +11,36 @@ import com.cg.BankingSystem.exception.NoTransactionsExistException;
 public interface BankingSystemDao<T> {
 
 	T authenticateUser(LoginBean bean) throws InvalidCredentialsException, InternalServerException;
-	
+
 	List<Transaction> listTransactions(long accountNumber) throws NoTransactionsExistException, InternalServerException;
-	
+
 	boolean updatePassword(String newPassword, String userId) throws InternalServerException;
-	
+
 	public static enum Queries {
-		GET_TRANSACTIONS_QUERY ("SELECT * FROM transactions WHERE account_id = ?"),
-		LOGIN_AUTHENTICATION_BA_QUERY ("SELECT user_id FROM user_table WHERE user_id = ? AND password = ?"),
-		LOGIN_AUTHENTICATION_CC_QUERY ("SELECT account_id FROM user_table WHERE user_id = ? AND password = ?"),
-		GET_ADMIN_DETAILS_QUERY ("SELECT * FROM admin_master WHERE user_id = ?"),
-		UPDATE_PASSWORD_QUERY ("UPDATE user_table SET password = ? WHERE user_id = ?"),
-		INSERT_CUSTOMER_QUERY ("INSERT INTO customer VALUES (?, ?, ?, ?, ?, ?)"),
-		INSERT_ACCOUNT_QUERY ("INSERT INTO account_master VALUES (acc_id_sequence.nextval, ?, ?, ?)"),
-		INSERT_USER_QUERY ("INSERT INTO user_table VALUES (?, ?, ?, ?, ?)"),
-		GET_ACCOUNT_NUMBER_QUERY ("SELECT acc_id_sequence.currval FROM DUAL");
-		
+		GET_TRANSACTIONS_QUERY("SELECT * FROM transactions WHERE account_id = ?"),
+		LOGIN_AUTHENTICATION_BA_QUERY("SELECT user_id FROM user_table WHERE user_id = ? AND password = ?"),
+		LOGIN_AUTHENTICATION_CC_QUERY("SELECT account_id FROM user_table WHERE user_id = ? AND password = ?"),
+		GET_ADMIN_DETAILS_QUERY("SELECT * FROM admin_master WHERE user_id = ?"),
+		UPDATE_PASSWORD_QUERY("UPDATE user_table SET password = ? WHERE user_id = ?"),
+		INSERT_CUSTOMER_QUERY("INSERT INTO customer VALUES (?, ?, ?, ?, ?, ?)"),
+		INSERT_ACCOUNT_QUERY("INSERT INTO account_master VALUES (acc_id_sequence.nextval, ?, ?, ?)"),
+		INSERT_USER_QUERY("INSERT INTO user_table VALUES (?, ?, ?, ?, ?)"),
+		GET_ACCOUNT_NUMBER_QUERY("SELECT acc_id_sequence.currval FROM DUAL"),
+		GET_ACCOUNT_BALANCE_QUERY("SELECT balance FROM customer WHERE accountnumber = ?"),
+		DEBIT_ACCOUNT_BALANCE_QUERY("UPDATE customer SET balance = ? WHERE accountnumber = ?"),
+		CREDIT_ACCOUNT_BALANCE_QUERY("UPDATE customer SET balance=? WHERE accountnumber = ?"),
+		TRANSACTION_AUTHENTICATION_QUERY("SELECT transactionpassword FROM customer WHERE accountnumber = ?");
+
 		private String query;
-		
+
 		private Queries(String query) {
 
 			this.query = query;
 		}
-		
+
 		public String getValue() {
 			return this.query;
 		}
 	}
-	
+
 }

@@ -96,5 +96,10 @@ public class Customer {
 	public void setTransactionPassword(String transactionPassword) {
 		this.transactionPassword = transactionPassword;
 	}
-	
+	@Override
+	public String toString() {
+		return "Customer [userId=" + userId + ", accountNumber=" + accountNumber + ", name=" + name + ", address="
+				+ address + ", mobileNumber=" + mobileNumber + ", emailId=" + emailId + ", panCardNumber="
+				+ panCardNumber + ", accountType=" + accountType + ", balance=" + balance + "]";
+	}
 }

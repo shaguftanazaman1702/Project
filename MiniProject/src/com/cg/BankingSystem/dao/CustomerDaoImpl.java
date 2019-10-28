@@ -22,7 +22,7 @@ public class CustomerDaoImpl implements CustomerDao {
 
 	@Override
 	public Customer authenticateUser(LoginBean bean) throws InternalServerException, InvalidCredentialsException {
-Connection conn = null;
+		Connection conn = null;
 		
 		try {
 			conn = JDBCUtil.getConnection();

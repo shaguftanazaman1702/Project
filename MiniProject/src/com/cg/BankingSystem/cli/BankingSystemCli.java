@@ -8,10 +8,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
-import javax.swing.text.DefaultEditorKit.CutAction;
-
-import com.cg.BankingSystem.dao.AdminDao;
-import com.cg.BankingSystem.dao.AdminDaoImpl;
 import com.cg.BankingSystem.dto.AccountType;
 import com.cg.BankingSystem.dto.Admin;
 import com.cg.BankingSystem.dto.Customer;
@@ -25,6 +21,7 @@ import com.cg.BankingSystem.exception.InvalidCredentialsException;
 import com.cg.BankingSystem.exception.NoServicesMadeException;
 import com.cg.BankingSystem.exception.NoTransactionsExistException;
 import com.cg.BankingSystem.exception.RequestCannotBeProcessedException;
+import com.cg.BankingSystem.exception.UserNotFoundException;
 import com.cg.BankingSystem.service.AdminService;
 import com.cg.BankingSystem.service.AdminServiceImpl;
 import com.cg.BankingSystem.service.BankingSystemService;
@@ -41,7 +38,6 @@ public class BankingSystemCli {
 	 * Static objects defined
 	 */
 	private static Scanner scanner;
-	private static AdminDao adminDao;
 
 	/**
 	 * Static block, implements even before the main method
@@ -59,11 +55,11 @@ public class BankingSystemCli {
 	 * @throws NoTransactionsExistException 
 	 * @throws RequestCannotBeProcessedException 
 	 * @throws NoServicesMadeException 
+	 * @throws UserNotFoundException 
 	 */
 	public static void main(String[] args)
 			throws InvalidCredentialsException, InternalServerException, AccountNotCreatedException, 
-			NoTransactionsExistException, RequestCannotBeProcessedException, NoServicesMadeException {
-		int userTypeChoice;
+			NoTransactionsExistException, RequestCannotBeProcessedException, NoServicesMadeException, UserNotFoundException {
 		System.out.println("WELCOME TO BANKING SYSTEM!");
 		
 		while (true) {
@@ -72,7 +68,7 @@ public class BankingSystemCli {
 			System.out.println("Enter 0 to Exit.");
 			System.out.println("***********************************************");
 			
-			userTypeChoice = scanner.nextInt();
+			int userTypeChoice = scanner.nextInt();
 			switch (userTypeChoice) {
 			case 1:
 				signIn();
@@ -88,7 +84,7 @@ public class BankingSystemCli {
 
 	private static void signIn()
 			throws InvalidCredentialsException, InternalServerException, AccountNotCreatedException, 
-			NoTransactionsExistException, RequestCannotBeProcessedException, NoServicesMadeException {
+			NoTransactionsExistException, RequestCannotBeProcessedException, NoServicesMadeException, UserNotFoundException {
 		System.out.println("***********************************************");
 		System.out.println("***** Enter Your Credentials *****");
 		
@@ -126,9 +122,10 @@ public class BankingSystemCli {
 	 * @throws InternalServerException
 	 * @throws AccountNotCreatedException
 	 * @throws NoTransactionsExistException 
+	 * @throws UserNotFoundException 
 	 */
 
-	public static void onAdminLogin(AdminService service) throws AccountNotCreatedException, InternalServerException, NoTransactionsExistException {
+	public static void onAdminLogin(AdminService service) throws AccountNotCreatedException, InternalServerException, NoTransactionsExistException, UserNotFoundException {
 		while (true) {
 			int choice;
 			System.out.println("***********************************************");
@@ -154,7 +151,7 @@ public class BankingSystemCli {
 
 	}
 
-	private static void createNewAccount(AdminService service) throws AccountNotCreatedException, InternalServerException {
+	private static void createNewAccount(AdminService service) throws AccountNotCreatedException, InternalServerException, UserNotFoundException {
 		boolean backFlag = false;
 		while (true) {
 			System.out.println("Select option : \n1: Create new account for existing user. \n2: Create new account for new user. \n3: Back.");
@@ -178,7 +175,7 @@ public class BankingSystemCli {
 		}
 	}
 
-	private static void createNewAccountForExistingUser(AdminService service) {
+	private static void createNewAccountForExistingUser(AdminService service) throws InternalServerException, UserNotFoundException {
 		System.out.print("Enter customer userId : ");
 		String userId = scanner.next();
 
@@ -207,7 +204,12 @@ public class BankingSystemCli {
 		else
 			newCustomer.setAccountType(AccountType.SAVINGS_ACCOUNT);
 		
-		service.saveExistingUser(newCustomer); 
+		boolean isCreated = service.saveExistingUser(newCustomer);
+		
+		if (isCreated)
+			System.out.println("Account created successfully");
+		else
+			System.out.println("Account could not be created now.\\nPlease try again later.");
 	}
 
 	private static void createNewUserAccount(AdminService service) throws AccountNotCreatedException, InternalServerException {
@@ -409,16 +411,22 @@ public class BankingSystemCli {
 			case 1:
 				System.out.println("Enter new mobile number: ");
 				String newContact = scanner.next();
-				service.changeContactNumber(newContact, customer.getAccountNumber());
-				customer.setMobileNumber(newContact);
-				System.out.println("Contact details updated successfully");
+				boolean isContactChanged = service.changeContactNumber(newContact, customer.getAccountNumber());
+				if (isContactChanged) {
+					customer.setMobileNumber(newContact);
+					System.out.println("Contact details updated successfully");
+				} else
+					System.out.println("Details could not be updated now.\\nPlease try again later.");
 				break;
 			case 2:
 				System.out.println("Enter new address: ");
 				String newAddress = scanner.next();
-				service.changeAddress(newAddress, customer.getAccountNumber());
-				customer.setAddress(newAddress);
-				System.out.println("Address details updated successfully");
+				boolean isAddressChanged = service.changeAddress(newAddress, customer.getAccountNumber());
+				if (isAddressChanged) {
+					customer.setAddress(newAddress);
+					System.out.println("Address details updated successfully");
+				} else
+					System.out.println("Details could not be updated now.\nPlease try again later.");
 				break;
 			case -1:
 				backFlag = true;
@@ -496,7 +504,12 @@ public class BankingSystemCli {
 				System.out.println("Passwords don't match");
 				break;
 			}
-			service.updatePassword(newPassword, customer.getUserId());
+			boolean result = service.updatePassword(newPassword, customer.getUserId());
+			
+			if (result)
+				System.out.println("Successfully updated password.");
+			else
+				System.out.println("Password could not be updated now, try again later");
 		}
 	}
 	

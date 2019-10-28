@@ -29,8 +29,8 @@ public interface BankingSystemDao<T> {
 		INSERT_ACCOUNT_QUERY ("INSERT INTO account_master VALUES (acc_id_sequence.nextval, ?, ?, ?)"),
 		INSERT_USER_QUERY ("INSERT INTO user_table VALUES (?, ?, ?, ?, ?)"),
 		GET_ACCOUNT_NUMBER_QUERY ("SELECT acc_id_sequence.currval FROM DUAL"),
-		CHANGE_ADDRESS_QUERY("update customer set address = ? where accountNumber = ?"),
-		CHANGE_CONTACT_NUMBER_QUERY("update customer set mobileNumber = ? where accountNumber = ?"),
+		CHANGE_ADDRESS_QUERY("update customer set address = ? where account_id = ?"),
+		CHANGE_CONTACT_NUMBER_QUERY("update customer set mobile_number = ? where account_id = ?"),
 		REQUEST_ID_QUERY("SELECT service_sequence.currval FROM DUAL"),
 		CHEQUE_BOOK_SERVICE_QUERY("INSERT INTO service_tracker VALUES(service_sequence.nextval,?,?,?)");
 		

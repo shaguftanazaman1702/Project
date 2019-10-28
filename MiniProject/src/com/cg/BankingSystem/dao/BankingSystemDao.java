@@ -31,17 +31,18 @@ public interface BankingSystemDao<T> {
 		INSERT_EXISTING_ACCOUNT_QUERY ("INSERT INTO account_master VALUES (?, ?, ?, ?)"),
 		INSERT_USER_QUERY ("INSERT INTO user_table VALUES (?, ?, ?, ?, ?)"),
 		GET_ACCOUNT_NUMBER_QUERY ("SELECT acc_id_sequence.currval FROM DUAL"),
-		CHANGE_ADDRESS_QUERY("update customer set address = ? where account_id = ?"),
-		CHANGE_CONTACT_NUMBER_QUERY("update customer set mobile_number = ? where account_id = ?"),
+		CHANGE_ADDRESS_QUERY("UPDATE customer SET address = ? WHERE account_id = ?"),
+		CHANGE_CONTACT_NUMBER_QUERY("UPDATE customer SET mobile_number = ? WHERE account_id = ?"),
 		REQUEST_ID_QUERY("SELECT service_sequence.currval FROM DUAL"),
 		CHEQUE_BOOK_SERVICE_QUERY("INSERT INTO service_tracker VALUES(service_sequence.nextval,?,?,?)"),
 		GET_REQUESTS_QUERY ("SELECT * FROM service_tracker WHERE account_id = ?"),
-		DEBIT_ACCOUNT_BALANCE_QUERY("UPDATE account_master SET balance = ? WHERE account_id = ?"),
-		CREDIT_ACCOUNT_BALANCE_QUERY("UPDATE account_master SET balance=? WHERE account_id = ?"),
+		DEBIT_ACCOUNT_BALANCE_QUERY("UPDATE account_master SET account_balance = ? WHERE account_id = ?"),
+		CREDIT_ACCOUNT_BALANCE_QUERY("UPDATE account_master SET account_balance = ? WHERE account_id = ?"),
 		GET_TRANSFER_ACCOUNT_BALANCE_QUERY ("SELECT account_balance from account_master where account_id = ?"),
 		GET_OTHER_ACCOUNTS_QUERY ("SELECT COUNT(*) FROM account_master WHERE account_id = ? and account_type = ?"),
 		GET_BENEFICIARIES_QUERY ("SELECT beneficiary_id, nick_name FROM beneficiary_details WHERE account_id = ?"),
-		ADD_BENEFICIARY_QUERY ("INSERT INTO beneficiary_details (?, ?, ?)");
+		ADD_BENEFICIARY_QUERY ("INSERT INTO beneficiary_details VALUES (?, ?, ?)"),
+		ADD_TRANSACTION_DETAILS ("INSERT INTO transactions values (txn_sequence.nextval, ?, ?, ?, ?, ?)");
 		
 		private String query;
 		

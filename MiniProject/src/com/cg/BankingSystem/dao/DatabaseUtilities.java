@@ -2,6 +2,7 @@ package com.cg.BankingSystem.dao;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.cg.BankingSystem.dto.AccountType;
 import com.cg.BankingSystem.dto.TransactionType;
@@ -27,4 +28,5 @@ public class DatabaseUtilities {
 			return AccountType.SAVINGS_ACCOUNT;
 		return AccountType.CURRENT_ACCOUNT;
 	}
+
 }

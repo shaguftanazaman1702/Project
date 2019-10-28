@@ -19,6 +19,7 @@ import com.cg.BankingSystem.dto.Request;
 import com.cg.BankingSystem.dto.SignUp;
 import com.cg.BankingSystem.dto.Transaction;
 import com.cg.BankingSystem.exception.AccountNotCreatedException;
+import com.cg.BankingSystem.exception.AccountsNotFoundException;
 import com.cg.BankingSystem.exception.InternalServerException;
 import com.cg.BankingSystem.exception.InvalidCredentialsException;
 import com.cg.BankingSystem.exception.NoServicesMadeException;
@@ -59,10 +60,11 @@ public class BankingSystemCli {
 	 * @throws RequestCannotBeProcessedException 
 	 * @throws NoServicesMadeException 
 	 * @throws UserNotFoundException 
+	 * @throws AccountsNotFoundException 
 	 */
 	public static void main(String[] args)
 			throws InvalidCredentialsException, InternalServerException, AccountNotCreatedException, 
-			NoTransactionsExistException, RequestCannotBeProcessedException, NoServicesMadeException, UserNotFoundException {
+			NoTransactionsExistException, RequestCannotBeProcessedException, NoServicesMadeException, UserNotFoundException, AccountsNotFoundException {
 		System.out.println("WELCOME TO BANKING SYSTEM!");
 		
 		while (true) {
@@ -87,7 +89,7 @@ public class BankingSystemCli {
 
 	private static void signIn()
 			throws InvalidCredentialsException, InternalServerException, AccountNotCreatedException, 
-			NoTransactionsExistException, RequestCannotBeProcessedException, NoServicesMadeException, UserNotFoundException {
+			NoTransactionsExistException, RequestCannotBeProcessedException, NoServicesMadeException, UserNotFoundException, AccountsNotFoundException {
 		System.out.println("***********************************************");
 		System.out.println("***** Enter Your Credentials *****");
 		
@@ -299,9 +301,10 @@ public class BankingSystemCli {
 	 * @throws NoTransactionsExistException 
 	 * @throws RequestCannotBeProcessedException 
 	 * @throws NoServicesMadeException 
+	 * @throws AccountsNotFoundException 
 	 */
 
-	public static void onCustomerLogin(Customer customer, CustomerService service) throws NoTransactionsExistException, InternalServerException, RequestCannotBeProcessedException, NoServicesMadeException {
+	public static void onCustomerLogin(Customer customer, CustomerService service) throws NoTransactionsExistException, InternalServerException, RequestCannotBeProcessedException, NoServicesMadeException, AccountsNotFoundException {
 		while (true) {
 			System.out.println("***********************************************");
 			System.out.println("Enter 1 to view statement");
@@ -482,7 +485,7 @@ public class BankingSystemCli {
 			System.out.println(request);
 	}
 
-	private static void fundTransfer(Customer customer, CustomerService service) {
+	private static void fundTransfer(Customer customer, CustomerService service) throws InternalServerException, AccountsNotFoundException {
 		boolean backFlag = false;
 		while (true) {
 			System.out.println("Please select one of the follworing options: \n1. Transfer funds to your other account.\n2.Tranfer funds to acoount of other customers.");
@@ -506,7 +509,7 @@ public class BankingSystemCli {
 		}
 	}
 
-	private static void transferAccrossAccounts(Customer customer, CustomerService service) {
+	private static void transferAccrossAccounts(Customer customer, CustomerService service) throws InternalServerException, AccountsNotFoundException {
 		Account otherAccount = service.fetchOtherExistingAccount(customer.getAccountNumber(), customer.getAccountType());
 		
 		System.out.println("***** FROM ACCOUNT *****");
@@ -518,6 +521,8 @@ public class BankingSystemCli {
 		double transferAmount = scanner.nextDouble();
 		System.out.print("Please enter your transaction password: ");
 		String txnPwd = scanner.next();
+		System.out.print("Enter message for fund transfer: ");
+		String txnDesc = scanner.next();
 		
 		boolean isValidTxnAmt = service.validateTransactionAmount(customer, transferAmount);
 		boolean isValidPwd = service.validateTransactionPassword(customer, txnPwd);
@@ -530,7 +535,11 @@ public class BankingSystemCli {
 			return;
 		}
 		
-		boolean isTransferred = service.transferFund(customer.getAccountNumber(), otherAccount, transferAmount);
+		Transaction txnDetails = new Transaction();
+		txnDetails.setTransactionAmount(transferAmount);
+		txnDetails.setTransactionDescription(txnDesc);
+		
+		boolean isTransferred = service.transferFund(customer, otherAccount, txnDetails);
 		if (isTransferred)
 			System.out.println("Successfully transferred funds.");
 		else
@@ -538,7 +547,7 @@ public class BankingSystemCli {
 			
 	}
 
-	private static void transferAcrossUsers(Customer customer, CustomerService service) {
+	private static void transferAcrossUsers(Customer customer, CustomerService service) throws InternalServerException {
 		List<Account> beneficiaries = service.fetchBeneficiaries(customer.getAccountNumber());
 		
 		while (true) {
@@ -576,6 +585,8 @@ public class BankingSystemCli {
 				double transferAmount = scanner.nextDouble();
 				System.out.print("Please enter your transaction password: ");
 				String txnPwd = scanner.next();
+				System.out.print("Enter message for fund transfer: ");
+				String txnDesc = scanner.next();
 				
 				double limit = service.getTransactionLimit();
 				
@@ -594,7 +605,11 @@ public class BankingSystemCli {
 					return;
 				}
 				
-				boolean isTransferred = service.transferFund(customer.getAccountNumber(), beneficiaries.get(inputChoice), transferAmount);
+				Transaction txnDetails = new Transaction();
+				txnDetails.setTransactionAmount(transferAmount);
+				txnDetails.setTransactionDescription(txnDesc);
+				
+				boolean isTransferred = service.transferFund(customer, beneficiaries.get(inputChoice), txnDetails);
 				if (isTransferred)
 					System.out.println("Successfully transferred funds.");
 				else

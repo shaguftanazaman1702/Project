@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import com.cg.BankingSystem.dto.Account;
@@ -12,6 +14,7 @@ import com.cg.BankingSystem.dto.Customer;
 import com.cg.BankingSystem.dto.LoginBean;
 import com.cg.BankingSystem.dto.Request;
 import com.cg.BankingSystem.dto.Transaction;
+import com.cg.BankingSystem.dto.TransactionType;
 import com.cg.BankingSystem.exception.AccountsNotFoundException;
 import com.cg.BankingSystem.exception.InternalServerException;
 import com.cg.BankingSystem.exception.InvalidCredentialsException;
@@ -341,7 +344,7 @@ Connection conn = null;
 	}
 
 	@Override
-	public boolean transferFund(Customer fromAccount, Account otherAccount, double transferAmount) throws InternalServerException {
+	public boolean transferFund(Customer fromAccount, Account otherAccount, Transaction txnDetails) throws InternalServerException {
 		Connection conn = null;
 		
 		try {
@@ -349,6 +352,9 @@ Connection conn = null;
 			PreparedStatement creditBlncStmt = conn.prepareStatement(BankingSystemDao.Queries.GET_TRANSFER_ACCOUNT_BALANCE_QUERY.getValue());
 			PreparedStatement creditStmt = conn.prepareStatement(BankingSystemDao.Queries.CREDIT_ACCOUNT_BALANCE_QUERY.getValue());
 			PreparedStatement debitStmt = conn.prepareStatement(BankingSystemDao.Queries.DEBIT_ACCOUNT_BALANCE_QUERY.getValue());
+			
+			PreparedStatement creditTxnStmt = conn.prepareStatement(BankingSystemDao.Queries.ADD_TRANSACTION_DETAILS.getValue());
+			PreparedStatement debitTxnStmt = conn.prepareStatement(BankingSystemDao.Queries.ADD_TRANSACTION_DETAILS.getValue());
 			
 			creditBlncStmt.setLong(1, otherAccount.getAccountNumber());
 			
@@ -360,10 +366,10 @@ Connection conn = null;
 			double toBalance = balanceDetails.getDouble(1);
 			double fromBalance = fromAccount.getBalance();
 			
-			debitStmt.setDouble(1, fromBalance - transferAmount);
+			debitStmt.setDouble(1, fromBalance - txnDetails.getTransactionAmount());
 			debitStmt.setLong(2, fromAccount.getAccountNumber());
 			
-			creditStmt.setDouble(1, toBalance + transferAmount);
+			creditStmt.setDouble(1, toBalance + txnDetails.getTransactionAmount());
 			creditStmt.setLong(2, otherAccount.getAccountNumber());
 			
 			int debitRowsAffected = debitStmt.executeUpdate();
@@ -377,6 +383,21 @@ Connection conn = null;
 				// Revert debiting from account
 				return false;
 			}
+			
+			creditTxnStmt.setString(1, txnDetails.getTransactionDescription());
+			creditTxnStmt.setDate(2, DatabaseUtilities.getSQLDate(LocalDate.now()));
+			creditTxnStmt.setString(3, TransactionType.CREDIT.getValue());
+			creditTxnStmt.setDouble(4, txnDetails.getTransactionAmount());
+			creditTxnStmt.setLong(5, otherAccount.getAccountNumber());
+			
+			debitTxnStmt.setString(1, txnDetails.getTransactionDescription());
+			debitTxnStmt.setDate(2, DatabaseUtilities.getSQLDate(LocalDate.now()));
+			debitTxnStmt.setString(3, TransactionType.DEBIT.getValue());
+			debitTxnStmt.setDouble(4, txnDetails.getTransactionAmount());
+			debitTxnStmt.setLong(5, fromAccount.getAccountNumber());
+			
+			creditTxnStmt.executeUpdate();
+			debitTxnStmt.executeUpdate();
 			
 			return true;
 		} catch (SQLException e) {

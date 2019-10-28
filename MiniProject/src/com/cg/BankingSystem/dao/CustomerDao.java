@@ -5,6 +5,7 @@ import com.cg.BankingSystem.dto.Account;
 import com.cg.BankingSystem.dto.AccountType;
 import com.cg.BankingSystem.dto.Customer;
 import com.cg.BankingSystem.dto.Request;
+import com.cg.BankingSystem.dto.Transaction;
 import com.cg.BankingSystem.exception.AccountsNotFoundException;
 import com.cg.BankingSystem.exception.InternalServerException;
 import com.cg.BankingSystem.exception.NoServicesMadeException;
@@ -24,7 +25,7 @@ public interface CustomerDao extends BankingSystemDao<Customer> {
 
 	List<Account> fetchBeneficiaries(long accountNumber) throws InternalServerException;
 
-	boolean transferFund(Customer fromAccount, Account otherAccount, double transferAmount) throws InternalServerException;
+	boolean transferFund(Customer fromAccount, Account otherAccount, Transaction txnDetails) throws InternalServerException;
 
 	boolean addNewBeneficiary(long accountNumber, Account newBeneficiary) throws InternalServerException;
 }

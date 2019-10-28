@@ -8,6 +8,8 @@ import com.cg.BankingSystem.dto.Account;
 import com.cg.BankingSystem.dto.AccountType;
 import com.cg.BankingSystem.dto.Customer;
 import com.cg.BankingSystem.dto.Request;
+import com.cg.BankingSystem.dto.Transaction;
+import com.cg.BankingSystem.exception.AccountsNotFoundException;
 import com.cg.BankingSystem.exception.InternalServerException;
 import com.cg.BankingSystem.exception.NoServicesMadeException;
 import com.cg.BankingSystem.exception.RequestCannotBeProcessedException;
@@ -57,27 +59,27 @@ public class CustomerServiceImpl extends BankingSystemServiceImpl implements Cus
 	}
 
 	@Override
-	public Account fetchOtherExistingAccount(long accountNumber, AccountType accountType) {
-		// TODO Auto-generated method stub
-		return null;
+	public Account fetchOtherExistingAccount(long accountNumber, AccountType accountType)
+			throws AccountsNotFoundException, InternalServerException {
+		return dao.fetchOtherExistingAccount(accountNumber, accountType);
 	}
 
 	@Override
-	public List<Account> fetchBeneficiaries(long accountNumber) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Account> fetchBeneficiaries(long accountNumber) throws InternalServerException {
+		return dao.fetchBeneficiaries(accountNumber);
 	}
 
 	@Override
-	public boolean transferFund(long accountNumber, Account otherAccount, double transferAmount) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean transferFund(Customer fromAccount, Account otherAccount, Transaction txnDetails)
+			throws InternalServerException {
+		return dao.transferFund(fromAccount, otherAccount, txnDetails);
 	}
 
 	@Override
-	public boolean addNewBeneficiary(long accountNumber, Account newBeneficiary) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean addNewBeneficiary(long accountNumber, Account newBeneficiary) throws InternalServerException {
+		return dao.addNewBeneficiary(accountNumber, newBeneficiary);
 	}
+
+	
 
 }

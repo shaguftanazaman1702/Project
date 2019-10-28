@@ -10,4 +10,8 @@ public enum TransactionType {
 	TransactionType(String transactionType) {
 		this.transactionType = transactionType;
 	}
+	
+	public String getValue() {
+		return transactionType;
+	}
 }

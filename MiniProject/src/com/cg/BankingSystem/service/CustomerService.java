@@ -6,6 +6,8 @@ import com.cg.BankingSystem.dto.Account;
 import com.cg.BankingSystem.dto.AccountType;
 import com.cg.BankingSystem.dto.Customer;
 import com.cg.BankingSystem.dto.Request;
+import com.cg.BankingSystem.dto.Transaction;
+import com.cg.BankingSystem.exception.AccountsNotFoundException;
 import com.cg.BankingSystem.exception.InternalServerException;
 import com.cg.BankingSystem.exception.NoServicesMadeException;
 import com.cg.BankingSystem.exception.RequestCannotBeProcessedException;
@@ -26,11 +28,11 @@ public interface CustomerService extends BankingSystemService {
 
 	boolean validateTransactionPassword(Customer customer, String txnPwd);
 
-	Account fetchOtherExistingAccount(long accountNumber, AccountType accountType);
+	Account fetchOtherExistingAccount(long accountNumber, AccountType accountType) throws AccountsNotFoundException, InternalServerException;
 
-	List<Account> fetchBeneficiaries(long accountNumber);
+	List<Account> fetchBeneficiaries(long accountNumber) throws InternalServerException;
 
-	boolean transferFund(long accountNumber, Account otherAccount, double transferAmount);
+	boolean transferFund(Customer fromAccount, Account otherAccount, Transaction txnDetails) throws InternalServerException;
 
-	boolean addNewBeneficiary(long accountNumber, Account newBeneficiary);	
+	boolean addNewBeneficiary(long accountNumber, Account newBeneficiary) throws InternalServerException;
 }

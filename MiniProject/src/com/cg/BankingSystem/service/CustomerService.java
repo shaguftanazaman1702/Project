@@ -1,11 +1,14 @@
 package com.cg.BankingSystem.service;
 
+import com.cg.BankingSystem.dto.Request;
+import com.cg.BankingSystem.exception.InternalServerException;
+import com.cg.BankingSystem.exception.RequestCannotBeProcessedException;
+
 public interface CustomerService extends BankingSystemService {
 
-	boolean changeContactNumber(String newNumber);
+	boolean changeContactNumber(String newNumber, long accountNumber) throws InternalServerException;
 	
-	boolean changeAddress(String newAddress);
+	boolean changeAddress(String newAddress, long accountNumber) throws InternalServerException;
 	
-	int requestForCheckBook();
-	
+	int requestForCheckBook(Request request) throws RequestCannotBeProcessedException, InternalServerException;	
 }

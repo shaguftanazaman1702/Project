@@ -204,7 +204,7 @@ public class BankingSystemCli {
 				accType = AccountType.SAVINGS_ACCOUNT;
 				break;
 			case 2:
-				accType = AccountType.SAVINGS_ACCOUNT;
+				accType = AccountType.CURRENT_ACCOUNT;
 				break;
 			default:
 				System.out.println("Invalid choice entered");
@@ -358,8 +358,37 @@ public class BankingSystemCli {
 	}
 
 	private static void FundTransfer() {
-		
+		int fundTransfer;
+		System.out.println("***********************************************");
+		System.out.println("Enter 1 to view mini-statement");
+		System.out.println("Enter 2 to view detailed-statement");
+		System.out.println("***********************************************");
+		fundTransfer = scanner.nextInt();
+		do {
+			switch (fundTransfer) {
+			case 1:
+				SameCustomerTransfer();
+				break;
+			case 2:
+				DifferentCustomerTransfer();
+				break;
+			case 0:
+				System.exit(0); // Exiting the control when 0 is entered.
+			default:
+				System.out.println("Invalid choice entered"); //
+			}
+		} while (true);		
 
+	}
+
+	private static void DifferentCustomerTransfer() {
+		
+		
+	}
+
+	private static void SameCustomerTransfer() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private static void ChangePassword() {

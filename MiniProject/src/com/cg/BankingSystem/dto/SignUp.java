@@ -12,6 +12,7 @@ public class SignUp {
 	private String userId;
 	private String password;
 	private String transactionPassword;
+	private long accountNumber;
 
 	public String getName() {
 		return name;
@@ -72,6 +73,12 @@ public class SignUp {
 	}
 	public void setTransactionPassword(String transactionPassword) {
 		this.transactionPassword = transactionPassword;
+	}
+	public long getAccountNumber() {
+		return accountNumber;
+	}
+	public void setAccountNumber(long accountNumber) {
+		this.accountNumber = accountNumber;
 	}
 	
 }

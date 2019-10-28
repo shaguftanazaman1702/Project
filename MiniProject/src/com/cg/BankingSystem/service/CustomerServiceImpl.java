@@ -1,9 +1,12 @@
 package com.cg.BankingSystem.service;
 
+import java.util.List;
+
 import com.cg.BankingSystem.dao.CustomerDao;
 import com.cg.BankingSystem.dao.CustomerDaoImpl;
 import com.cg.BankingSystem.dto.Request;
 import com.cg.BankingSystem.exception.InternalServerException;
+import com.cg.BankingSystem.exception.NoServicesMadeException;
 import com.cg.BankingSystem.exception.RequestCannotBeProcessedException;
 
 public class CustomerServiceImpl extends BankingSystemServiceImpl implements CustomerService {
@@ -28,6 +31,11 @@ public class CustomerServiceImpl extends BankingSystemServiceImpl implements Cus
 	@Override
 	public int requestForCheckBook(Request request) throws RequestCannotBeProcessedException, InternalServerException {
 		return dao.requestForCheckBook(request);
+	}
+
+	@Override
+	public List<Request> getRequests(long accountNumber) throws NoServicesMadeException, InternalServerException {
+		return dao.getRequests(accountNumber);
 	}
 
 }

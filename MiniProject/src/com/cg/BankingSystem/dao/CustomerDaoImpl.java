@@ -14,6 +14,7 @@ import com.cg.BankingSystem.dto.Request;
 import com.cg.BankingSystem.dto.Transaction;
 import com.cg.BankingSystem.exception.InternalServerException;
 import com.cg.BankingSystem.exception.InvalidCredentialsException;
+import com.cg.BankingSystem.exception.NoServicesMadeException;
 import com.cg.BankingSystem.exception.NoTransactionsExistException;
 import com.cg.BankingSystem.exception.RequestCannotBeProcessedException;
 
@@ -58,7 +59,7 @@ Connection conn = null;
 			fetchedCustomer.setEmailId(customerDetails.getString(3));
 			fetchedCustomer.setAddress(customerDetails.getString(4));
 			fetchedCustomer.setPanCardNumber(customerDetails.getString(5));
-			fetchedCustomer.setMobileNo(customerDetails.getString(6));
+			fetchedCustomer.setMobileNumber(customerDetails.getString(6));
 			fetchedCustomer.setUserId(bean.getUserId());
 			fetchedCustomer.setPassword(bean.getPassword());
 			fetchedCustomer.setTransactionPassword(txnDetails.getString(1));
@@ -215,6 +216,45 @@ Connection conn = null;
 			}
 			
 			return rs.getInt(1);
+		} catch (SQLException e) {
+			throw new InternalServerException(e.getMessage());
+		} finally {
+			try {
+				if (conn != null)
+					conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Override
+	public List<Request> getRequests(long accountNumber) throws NoServicesMadeException, InternalServerException {
+		Connection conn = null;
+		
+		try {
+			conn = JDBCUtil.getConnection();
+			PreparedStatement requestStmt = conn.prepareStatement(BankingSystemDao.Queries.GET_REQUESTS_QUERY.getValue());
+			
+			requestStmt.setLong(1, accountNumber);
+			
+			ResultSet requestResults = requestStmt.executeQuery();
+			
+			List<Request> requests = new ArrayList<Request>();
+			while (requestResults.next()) {
+				Request request = new Request();
+				request.setRequestNumber(requestResults.getInt(1));
+				request.setAccountNumber(requestResults.getLong(2));
+				request.setRequestDate(DatabaseUtilities.getLocalDate(requestResults.getDate(3)));
+				request.setStatus(requestResults.getInt(4));
+				
+				requests.add(request);
+			}
+			
+			if (requests.size() == 0)
+				throw new NoServicesMadeException("User has no pending service requests.");
+			
+			return requests;
 		} catch (SQLException e) {
 			throw new InternalServerException(e.getMessage());
 		} finally {

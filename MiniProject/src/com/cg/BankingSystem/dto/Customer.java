@@ -48,12 +48,6 @@ public class Customer {
 	public void setAddress(String address) {
 		this.address = address;
 	}
-	public String getMobileNo() {
-		return mobileNumber;
-	}
-	public void setMobileNo(String mobileNo) {
-		this.mobileNumber = mobileNo;
-	}
 	public String getEmailId() {
 		return emailId;
 	}

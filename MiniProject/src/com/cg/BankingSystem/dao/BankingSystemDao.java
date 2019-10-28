@@ -32,7 +32,8 @@ public interface BankingSystemDao<T> {
 		CHANGE_ADDRESS_QUERY("update customer set address = ? where account_id = ?"),
 		CHANGE_CONTACT_NUMBER_QUERY("update customer set mobile_number = ? where account_id = ?"),
 		REQUEST_ID_QUERY("SELECT service_sequence.currval FROM DUAL"),
-		CHEQUE_BOOK_SERVICE_QUERY("INSERT INTO service_tracker VALUES(service_sequence.nextval,?,?,?)");
+		CHEQUE_BOOK_SERVICE_QUERY("INSERT INTO service_tracker VALUES(service_sequence.nextval,?,?,?)"),
+		GET_REQUESTS_QUERY ("SELECT * FROM service_tracker WHERE account_id = ?");
 		
 		private String query;
 		

@@ -6,12 +6,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.cg.BankingSystem.dto.Admin;
+import com.cg.BankingSystem.dto.Account;
+import com.cg.BankingSystem.dto.AccountType;
 import com.cg.BankingSystem.dto.Customer;
 import com.cg.BankingSystem.dto.LoginBean;
 import com.cg.BankingSystem.dto.Request;
 import com.cg.BankingSystem.dto.Transaction;
+import com.cg.BankingSystem.exception.AccountsNotFoundException;
 import com.cg.BankingSystem.exception.InternalServerException;
 import com.cg.BankingSystem.exception.InvalidCredentialsException;
 import com.cg.BankingSystem.exception.NoServicesMadeException;
@@ -264,6 +265,152 @@ Connection conn = null;
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
+		}
+	}
+
+	@Override
+	public Account fetchOtherExistingAccount(long accountNumber, AccountType accountType) throws AccountsNotFoundException, InternalServerException {
+		Connection conn = null;
+		
+		try {
+			conn = JDBCUtil.getConnection();
+			PreparedStatement fetchOthrAcntsStmt = conn.prepareStatement(BankingSystemDao.Queries.GET_OTHER_ACCOUNTS_QUERY.getValue());
+			
+			fetchOthrAcntsStmt.setLong(1, accountNumber);
+			
+			String complimentaryAccountType = accountType == AccountType.SAVINGS_ACCOUNT ? AccountType.CURRENT_ACCOUNT.getValue() : AccountType.SAVINGS_ACCOUNT.getValue();
+			
+			fetchOthrAcntsStmt.setString(2, complimentaryAccountType);
+			
+			ResultSet results = fetchOthrAcntsStmt.executeQuery();
+			
+			int matchedEntry = 0;
+			if (results.next())
+				matchedEntry = results.getInt(1);
+			
+			if (matchedEntry == 0)
+				throw new AccountsNotFoundException("No Alternate account for this user.");
+			
+			Account fetchedAccount = new Account();
+			fetchedAccount.setAccountNumber(accountNumber);
+			fetchedAccount.setAccountType(DatabaseUtilities.getAccountType(complimentaryAccountType));
+			
+			return fetchedAccount;
+		} catch (SQLException e) {
+			throw new InternalServerException(e.getMessage());
+		} finally {
+			try {
+				if (conn != null)
+					conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Override
+	public List<Account> fetchBeneficiaries(long accountNumber) throws InternalServerException {
+		Connection conn = null;
+		
+		try {
+			conn = JDBCUtil.getConnection();
+			PreparedStatement fetchBnfcryStmt = conn.prepareStatement(BankingSystemDao.Queries.GET_BENEFICIARIES_QUERY.getValue());
+			fetchBnfcryStmt.setLong(1, accountNumber);
+			
+			ResultSet bnfcryDetails = fetchBnfcryStmt.executeQuery();
+			
+			List<Account> beneficiaries = new ArrayList<Account>();
+			while(bnfcryDetails.next()) {
+				Account account = new Account();
+				account.setAccountNumber(bnfcryDetails.getLong(1));
+				account.setNickName(bnfcryDetails.getString(2));
+				beneficiaries.add(account);
+			}
+			
+			return beneficiaries;
+		} catch (SQLException e) {
+			throw new InternalServerException(e.getMessage());
+		} finally {
+			try {
+				if (conn != null)
+					conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Override
+	public boolean transferFund(Customer fromAccount, Account otherAccount, double transferAmount) throws InternalServerException {
+		Connection conn = null;
+		
+		try {
+			conn = JDBCUtil.getConnection();
+			PreparedStatement creditBlncStmt = conn.prepareStatement(BankingSystemDao.Queries.GET_TRANSFER_ACCOUNT_BALANCE_QUERY.getValue());
+			PreparedStatement creditStmt = conn.prepareStatement(BankingSystemDao.Queries.CREDIT_ACCOUNT_BALANCE_QUERY.getValue());
+			PreparedStatement debitStmt = conn.prepareStatement(BankingSystemDao.Queries.DEBIT_ACCOUNT_BALANCE_QUERY.getValue());
+			
+			creditBlncStmt.setLong(1, otherAccount.getAccountNumber());
+			
+			ResultSet balanceDetails = creditBlncStmt.executeQuery();
+			
+			if (!balanceDetails.next())
+				throw new InternalServerException("Server Error, please try again later.");
+			
+			double toBalance = balanceDetails.getDouble(1);
+			double fromBalance = fromAccount.getBalance();
+			
+			debitStmt.setDouble(1, fromBalance - transferAmount);
+			debitStmt.setLong(2, fromAccount.getAccountNumber());
+			
+			creditStmt.setDouble(1, toBalance + transferAmount);
+			creditStmt.setLong(2, otherAccount.getAccountNumber());
+			
+			int debitRowsAffected = debitStmt.executeUpdate();
+			
+			if (debitRowsAffected == 0)
+				return false;
+			
+			int creditRowsAffected = creditStmt.executeUpdate();
+			
+			if(creditRowsAffected == 0) {
+				// Revert debiting from account
+				return false;
+			}
+			
+			return true;
+		} catch (SQLException e) {
+			throw new InternalServerException(e.getMessage());
+		} finally {
+			try {
+				if (conn != null)
+					conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Override
+	public boolean addNewBeneficiary(long accountNumber, Account newBeneficiary) throws InternalServerException {
+		Connection conn = null;
+		
+		try {
+			conn = JDBCUtil.getConnection();
+			PreparedStatement addBnfcryStmt = conn.prepareStatement(BankingSystemDao.Queries.ADD_BENEFICIARY_QUERY.getValue());
+			
+			addBnfcryStmt.setLong(1, accountNumber);
+			addBnfcryStmt.setLong(2, newBeneficiary.getAccountNumber());
+			addBnfcryStmt.setString(3, newBeneficiary.getNickName());
+			
+			int rowsAffected = addBnfcryStmt.executeUpdate();
+			
+			if (rowsAffected == 0)
+				return false;
+			
+			return true;
+		} catch (SQLException e) {
+			throw new InternalServerException(e.getMessage());
 		}
 	}
 

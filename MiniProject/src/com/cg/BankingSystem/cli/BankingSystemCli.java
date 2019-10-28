@@ -3,11 +3,14 @@
  */
 package com.cg.BankingSystem.cli;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+
 import java.io.ObjectInputStream.GetField;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
+import com.cg.BankingSystem.dto.Account;
 import com.cg.BankingSystem.dto.AccountType;
 import com.cg.BankingSystem.dto.Admin;
 import com.cg.BankingSystem.dto.Customer;
@@ -467,7 +470,6 @@ public class BankingSystemCli {
 	}
 
 	private static void trackService(Customer customer, CustomerService service) throws NoServicesMadeException, InternalServerException {
-		// TODO Auto-generated method stub
 		if (customer.getRequests() == null) {
 			// First request to view progress
 			List<Request> requests = service.getRequests(customer.getAccountNumber());
@@ -481,8 +483,127 @@ public class BankingSystemCli {
 	}
 
 	private static void fundTransfer(Customer customer, CustomerService service) {
-		// TODO Auto-generated method stub
+		boolean backFlag = false;
+		while (true) {
+			System.out.println("Please select one of the follworing options: \n1. Transfer funds to your other account.\n2.Tranfer funds to acoount of other customers.");
+			int inputChoice = scanner.nextInt();
+			switch (inputChoice) {
+			case 1:
+				transferAccrossAccounts(customer, service);
+				break;
+			case 2:
+				transferAcrossUsers(customer, service);
+				break;
+			case 0:
+				backFlag = true;
+				break;
+			default:
+				System.out.println("Invalid input entered.");
+				break;
+			}
+			if (backFlag)
+				break;
+		}
+	}
 
+	private static void transferAccrossAccounts(Customer customer, CustomerService service) {
+		Account otherAccount = service.fetchOtherExistingAccount(customer.getAccountNumber(), customer.getAccountType());
+		
+		System.out.println("***** FROM ACCOUNT *****");
+		System.out.println(customer.getAccountNumber() + "\t" + customer.getName());
+		System.out.println("***** TO ACCOUNT *****");
+		System.out.println(otherAccount.getAccountNumber() + "\t" + customer.getName());
+		
+		System.out.print("Please enter the amount: ");
+		double transferAmount = scanner.nextDouble();
+		System.out.print("Please enter your transaction password: ");
+		String txnPwd = scanner.next();
+		
+		boolean isValidTxnAmt = service.validateTransactionAmount(customer, transferAmount);
+		boolean isValidPwd = service.validateTransactionPassword(customer, txnPwd);
+		
+		if (!isValidTxnAmt) {
+			System.out.println("Insufficient funds in your account.");
+			return;
+		} if (!isValidPwd) {
+			System.out.println("Invalid password entered for transaction.");
+			return;
+		}
+		
+		boolean isTransferred = service.transferFund(customer.getAccountNumber(), otherAccount, transferAmount);
+		if (isTransferred)
+			System.out.println("Successfully transferred funds.");
+		else
+			System.out.println("Could not transfer funds at this moment, try again later.");
+			
+	}
+
+	private static void transferAcrossUsers(Customer customer, CustomerService service) {
+		List<Account> beneficiaries = service.fetchBeneficiaries(customer.getAccountNumber());
+		
+		while (true) {
+			boolean isBeneficiaryAdded = beneficiaries.size() == 0;
+			if (isBeneficiaryAdded) 
+				System.out.println("No Beneficiaries added. Please add a beneficiary to tranfer money.");
+			
+			System.out.println("  Account Number\tNickName");
+			for (int index = 1 ; index <= beneficiaries.size(); index++)
+				System.out.println(index + " "+ beneficiaries.get(index).getAccountNumber() + "\t" + beneficiaries.get(index).getNickName());
+			
+			if (isBeneficiaryAdded)
+				System.out.println("Please enter a number in the range 1 - " + beneficiaries.size());
+			System.out.println("Press 0 to add a beneficiary.\nPress -1 to go back.");
+			
+			int inputChoice = scanner.nextInt();
+			
+			if (inputChoice == 0) {
+				System.out.print("Enter beneficiary account number: ");
+				long accountNumber = scanner.nextLong();
+				System.out.print("Enter a nick name for beneficiary: ");
+				String nickName = scanner.next();
+				Account newBeneficiary = new Account();
+				newBeneficiary.setAccountNumber(accountNumber);
+				newBeneficiary.setNickName(nickName);
+				
+				boolean isAdded = service.addNewBeneficiary(customer.getAccountNumber(), newBeneficiary);
+				if (isAdded) {
+					System.out.println("Beneficiary added.");
+					beneficiaries.add(newBeneficiary);
+				} else
+					System.out.println("Beneficiary could not be added now, try again later");
+			} else if (inputChoice <= beneficiaries.size()) {
+				System.out.print("Please enter the amount: ");
+				double transferAmount = scanner.nextDouble();
+				System.out.print("Please enter your transaction password: ");
+				String txnPwd = scanner.next();
+				
+				double limit = service.getTransactionLimit();
+				
+				boolean isValidTxnLimit = transferAmount <= limit;
+				boolean isValidTxnAmt = service.validateTransactionAmount(customer, transferAmount);
+				boolean isValidPwd = service.validateTransactionPassword(customer, txnPwd);
+				
+				if (!isValidTxnAmt) {
+					System.out.println("Insufficient funds in your account, or transaction");
+					return;
+				} if (!isValidPwd) {
+					System.out.println("Invalid password entered for transaction.");
+					return;
+				} if (!isValidTxnLimit) {
+					System.out.println("Can't transfer an amount more than 10 Lakhs.");
+					return;
+				}
+				
+				boolean isTransferred = service.transferFund(customer.getAccountNumber(), beneficiaries.get(inputChoice), transferAmount);
+				if (isTransferred)
+					System.out.println("Successfully transferred funds.");
+				else
+					System.out.println("Could not transfer funds at this moment, try again later.");
+			} else if (inputChoice == -1)
+				break; // Go to previous page.
+			else 
+				System.out.println("Please enter a valid choice.");
+		}
 	}
 
 	private static void changePassword(Customer customer, CustomerService service) throws InternalServerException {

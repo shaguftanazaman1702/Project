@@ -4,6 +4,9 @@ import java.util.List;
 
 import com.cg.BankingSystem.dao.CustomerDao;
 import com.cg.BankingSystem.dao.CustomerDaoImpl;
+import com.cg.BankingSystem.dto.Account;
+import com.cg.BankingSystem.dto.AccountType;
+import com.cg.BankingSystem.dto.Customer;
 import com.cg.BankingSystem.dto.Request;
 import com.cg.BankingSystem.exception.InternalServerException;
 import com.cg.BankingSystem.exception.NoServicesMadeException;
@@ -36,6 +39,45 @@ public class CustomerServiceImpl extends BankingSystemServiceImpl implements Cus
 	@Override
 	public List<Request> getRequests(long accountNumber) throws NoServicesMadeException, InternalServerException {
 		return dao.getRequests(accountNumber);
+	}
+
+	@Override
+	public double getTransactionLimit() {
+		return 1000000;
+	}
+
+	@Override
+	public boolean validateTransactionAmount(Customer customer, double transferAmount) {
+		return transferAmount < customer.getBalance();
+	}
+
+	@Override
+	public boolean validateTransactionPassword(Customer customer, String txnPwd) {
+		return txnPwd.equals(customer.getTransactionPassword());
+	}
+
+	@Override
+	public Account fetchOtherExistingAccount(long accountNumber, AccountType accountType) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Account> fetchBeneficiaries(long accountNumber) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean transferFund(long accountNumber, Account otherAccount, double transferAmount) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean addNewBeneficiary(long accountNumber, Account newBeneficiary) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

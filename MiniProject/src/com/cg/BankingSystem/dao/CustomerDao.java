@@ -2,12 +2,13 @@ package com.cg.BankingSystem.dao;
 
 import java.util.List;
 
+import com.cg.BankingSystem.dto.Account;
+import com.cg.BankingSystem.dto.AccountType;
 import com.cg.BankingSystem.dto.Customer;
-import com.cg.BankingSystem.dto.Payee;
 import com.cg.BankingSystem.dto.Request;
-import com.cg.BankingSystem.exception.InsufficientBalanceException;
+import com.cg.BankingSystem.dto.Transaction;
+import com.cg.BankingSystem.exception.AccountsNotFoundException;
 import com.cg.BankingSystem.exception.InternalServerException;
-import com.cg.BankingSystem.exception.InvalidCredentialsException;
 import com.cg.BankingSystem.exception.NoServicesMadeException;
 import com.cg.BankingSystem.exception.RequestCannotBeProcessedException;
 
@@ -21,7 +22,12 @@ boolean changeContactNumber(String newNumber, long accountNumber) throws Interna
 	
 	List<Request> getRequests(long accountNumber) throws NoServicesMadeException, InternalServerException;
 	
-	void fundTransfer(long fromAccountNo, Payee payee, double amount, String transactionPassword)
-			throws InsufficientBalanceException, InvalidCredentialsException, InternalServerException;
+	Account fetchOtherExistingAccount(long accountNumber, AccountType accountType) throws AccountsNotFoundException, InternalServerException;
+
+	List<Account> fetchBeneficiaries(long accountNumber) throws InternalServerException;
+
+	boolean transferFund(Customer fromAccount, Account otherAccount, Transaction txnDetails) throws InternalServerException;
+
+	boolean addNewBeneficiary(long accountNumber, Account newBeneficiary) throws InternalServerException;
 	
 }

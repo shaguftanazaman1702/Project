@@ -18,6 +18,7 @@ import com.cg.BankingSystem.exception.AccountNotCreatedException;
 import com.cg.BankingSystem.exception.InternalServerException;
 import com.cg.BankingSystem.exception.InvalidCredentialsException;
 import com.cg.BankingSystem.exception.NoTransactionsExistException;
+import com.cg.BankingSystem.exception.UserNotFoundException;
 
 public class AdminDaoTests {
 	
@@ -58,18 +59,24 @@ public class AdminDaoTests {
 	@Test
 	public void testCreation() throws InternalServerException, AccountNotCreatedException {
 		SignUp newUser = new SignUp();
-		newUser.setName("Swaroop");
+		newUser.setName("Vishal");
 		newUser.setAccountType(AccountType.SAVINGS_ACCOUNT);
 		newUser.setAddress("Mumbai");
 		newUser.setEmail("abs@gmail.com");
 		newUser.setMobileNo("+919999996666");
 		newUser.setOpeningBal(500);
-		newUser.setPanCardNumber("AB231");
-		newUser.setPassword("124Da");
-		newUser.setTransactionPassword("124Da");
-		newUser.setUserId("AB234");
+		newUser.setPanCardNumber("AB331");
+		newUser.setPassword("121Da");
+		newUser.setTransactionPassword("121Da");
+		newUser.setUserId("CC184");
 		
 		System.out.println(dao.createNewAccount(newUser));
+	}
+	
+	@Ignore
+	@Test
+	public void testFindCustomer() throws InternalServerException, UserNotFoundException {
+		System.out.println(dao.findCustomer("sh655"));
 	}
 	
 	@After

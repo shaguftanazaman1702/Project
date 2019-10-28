@@ -36,10 +36,13 @@ public interface BankingSystemDao<T> {
 		REQUEST_ID_QUERY("SELECT service_sequence.currval FROM DUAL"),
 		CHEQUE_BOOK_SERVICE_QUERY("INSERT INTO service_tracker VALUES(service_sequence.nextval,?,?,?)"),
 		GET_REQUESTS_QUERY ("SELECT * FROM service_tracker WHERE account_id = ?"),
-		GET_ACCOUNT_BALANCE_QUERY("SELECT balance FROM customer WHERE accountnumber = ?"),
-		DEBIT_ACCOUNT_BALANCE_QUERY("UPDATE customer SET balance = ? WHERE accountnumber = ?"),
-		CREDIT_ACCOUNT_BALANCE_QUERY("UPDATE customer SET balance=? WHERE accountnumber = ?"),
-		TRANSACTION_AUTHENTICATION_QUERY("SELECT transactionpassword FROM customer WHERE accountnumber = ?");
+		DEBIT_ACCOUNT_BALANCE_QUERY("UPDATE account_master SET account_balance = ? WHERE account_id = ?"),
+		CREDIT_ACCOUNT_BALANCE_QUERY("UPDATE account_master SET account_balance = ? WHERE account_id = ?"),
+		GET_TRANSFER_ACCOUNT_BALANCE_QUERY ("SELECT account_balance from account_master where account_id = ?"),
+		GET_OTHER_ACCOUNTS_QUERY ("SELECT COUNT(*) FROM account_master WHERE account_id = ? and account_type = ?"),
+		GET_BENEFICIARIES_QUERY ("SELECT beneficiary_id, nick_name FROM beneficiary_details WHERE account_id = ?"),
+		ADD_BENEFICIARY_QUERY ("INSERT INTO beneficiary_details VALUES (?, ?, ?)"),
+		ADD_TRANSACTION_DETAILS ("INSERT INTO transactions values (txn_sequence.nextval, ?, ?, ?, ?, ?)");
 
 		private String query;
 

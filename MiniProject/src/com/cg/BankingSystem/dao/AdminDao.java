@@ -7,6 +7,6 @@ import com.cg.BankingSystem.exception.InternalServerException;
 
 public interface AdminDao extends BankingSystemDao<Admin> {
 	
-	long createNewAccount(SignUp newCustomer) throws AccountNotCreatedException, InternalServerException;
+		long createNewAccount(SignUp newCustomer) throws AccountNotCreatedException, InternalServerException;
 	
 }

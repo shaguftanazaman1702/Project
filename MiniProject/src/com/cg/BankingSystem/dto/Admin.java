@@ -21,4 +21,9 @@ public class Admin {
 		this.userName = userName;
 	}
 
+	@Override
+	public String toString() {
+		return "Admin [userId=" + userId + ", userName=" + userName + "]";
+	}
+
 }

@@ -144,6 +144,13 @@ public class AdminDaoImpl implements AdminDao {
 			return accountNumber;
 		} catch (SQLException e) {
 			throw new InternalServerException(e.getMessage());
+		} finally {
+			try {
+				if (conn != null)
+					conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -179,33 +186,24 @@ public class AdminDaoImpl implements AdminDao {
 	}
 
 	private long insertIntoAccount(Connection conn, PreparedStatement accountInsertStmt, SignUp newCustomer) throws AccountNotCreatedException, InternalServerException, SQLException {
-		try {
-			accountInsertStmt.setString(1, newCustomer.getAccountType().getValue());
-			accountInsertStmt.setDouble(2, newCustomer.getOpeningBal());
-			accountInsertStmt.setDate(3, DatabaseUtilities.getSQLDate(LocalDate.now()));
+		accountInsertStmt.setString(1, newCustomer.getAccountType().getValue());
+		accountInsertStmt.setDouble(2, newCustomer.getOpeningBal());
+		accountInsertStmt.setDate(3, DatabaseUtilities.getSQLDate(LocalDate.now()));
+		
+		int rowsAffected = accountInsertStmt.executeUpdate();
+		
+		if (rowsAffected == 0)
+			throw new AccountNotCreatedException("Account couldn't be created now, please try again later");
 			
-			int rowsAffected = accountInsertStmt.executeUpdate();
+		PreparedStatement getAccNoStmt = conn.prepareStatement(BankingSystemDao.Queries.GET_ACCOUNT_NUMBER_QUERY.getValue());
 			
-			if (rowsAffected == 0)
-				throw new AccountNotCreatedException("Account couldn't be created now, please try again later");
+		ResultSet accountNumber = getAccNoStmt.executeQuery();
 			
-			PreparedStatement getAccNoStmt = conn.prepareStatement(BankingSystemDao.Queries.GET_ACCOUNT_NUMBER_QUERY.getValue());
-			
-			ResultSet accountNumber = getAccNoStmt.executeQuery();
-			
-			if (!accountNumber.next()) {
-				// Write code to revert writing to account table
-				throw new AccountNotCreatedException("Account couldn't be created, please try again later");
-			}
-			return accountNumber.getLong(1);
-		} finally {
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+		if (!accountNumber.next()) {
+			// Write code to revert writing to account table
+			throw new AccountNotCreatedException("Account couldn't be created, please try again later");
 		}
+		return accountNumber.getLong(1);
 	}
 
 }

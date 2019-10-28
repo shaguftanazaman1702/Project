@@ -46,5 +46,12 @@ public class Transaction {
 	}
 	public void setTransactionDescription(String transactionDescription) {
 		this.transactionDescription = transactionDescription;
-	}	
+	}
+	@Override
+	public String toString() {
+		return "Transaction [transactionDate=" + transactionDate + ", transactionAmount=" + transactionAmount
+				+ ", transactionType=" + transactionType + ", transactionID=" + transactionID + ", accountNo="
+				+ accountNo + ", transactionDescription=" + transactionDescription + "]";
+	}
+	
 }

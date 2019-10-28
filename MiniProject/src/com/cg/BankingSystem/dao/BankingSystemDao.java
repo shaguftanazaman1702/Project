@@ -21,11 +21,18 @@ public interface BankingSystemDao<T> {
 		LOGIN_AUTHENTICATION_BA_QUERY ("SELECT user_id FROM user_table WHERE user_id = ? AND password = ?"),
 		LOGIN_AUTHENTICATION_CC_QUERY ("SELECT account_id FROM user_table WHERE user_id = ? AND password = ?"),
 		GET_ADMIN_DETAILS_QUERY ("SELECT * FROM admin_master WHERE user_id = ?"),
+		GET_CUSTOMER_DETAILS_QUERY ("SELECT * FROM customer WHERE account_id = ?"),
+		GET_ACCOUNT_DETAILS_QUERY ("SELECT * FROM account_master WHERE account_id = ?"),
+		GET_TXN_PWD_QUERY ("SELECT transaction_password FROM user_table WHERE account_id = ?"),
 		UPDATE_PASSWORD_QUERY ("UPDATE user_table SET password = ? WHERE user_id = ?"),
 		INSERT_CUSTOMER_QUERY ("INSERT INTO customer VALUES (?, ?, ?, ?, ?, ?)"),
 		INSERT_ACCOUNT_QUERY ("INSERT INTO account_master VALUES (acc_id_sequence.nextval, ?, ?, ?)"),
 		INSERT_USER_QUERY ("INSERT INTO user_table VALUES (?, ?, ?, ?, ?)"),
-		GET_ACCOUNT_NUMBER_QUERY ("SELECT acc_id_sequence.currval FROM DUAL");
+		GET_ACCOUNT_NUMBER_QUERY ("SELECT acc_id_sequence.currval FROM DUAL"),
+		CHANGE_ADDRESS_QUERY("update customer set address = ? where accountNumber = ?"),
+		CHANGE_CONTACT_NUMBER_QUERY("update customer set mobileNumber = ? where accountNumber = ?"),
+		REQUEST_ID_QUERY("SELECT service_sequence.currval FROM DUAL"),
+		CHEQUE_BOOK_SERVICE_QUERY("INSERT INTO service_tracker VALUES(service_sequence.nextval,?,?,?)");
 		
 		private String query;
 		

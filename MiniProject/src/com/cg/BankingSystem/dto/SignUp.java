@@ -7,7 +7,7 @@ public class SignUp {
 	private String mobileNo;
 	private String email;
 	private AccountType accountType;
-	private int openingBal;
+	private double openingBal;
 	private String panCardNumber;
 	private String userId;
 	private String password;
@@ -43,10 +43,10 @@ public class SignUp {
 	public void setAccountType(AccountType accountType) {
 		this.accountType = accountType;
 	}
-	public int getOpeningBal() {
+	public double getOpeningBal() {
 		return openingBal;
 	}
-	public void setOpeningBal(int openingBal) {
+	public void setOpeningBal(double openingBal) {
 		this.openingBal = openingBal;
 	}
 	public String getPanCardNumber() {

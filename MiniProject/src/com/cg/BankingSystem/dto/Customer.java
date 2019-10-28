@@ -14,7 +14,7 @@ public class Customer {
 	private String panCardNumber;
 	private AccountType accountType;
 	private String transactionPassword;
-	private int balance;
+	private double balance;
 	private List<Request> requests;
 	private List<Transaction> transactions;
 	
@@ -66,10 +66,10 @@ public class Customer {
 	public void setAccountType(AccountType accountType) {
 		this.accountType = accountType;
 	}
-	public int getBalance() {
+	public double getBalance() {
 		return balance;
 	}
-	public void setBalance(int balance) {
+	public void setBalance(double balance) {
 		this.balance = balance;
 	}
 	public List<Request> getRequests() {

@@ -6,6 +6,9 @@ package com.cg.BankingSystem.cli;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Logger;
+
+import org.apache.log4j.PropertyConfigurator;
 
 import com.cg.BankingSystem.dto.Account;
 import com.cg.BankingSystem.dto.AccountType;
@@ -44,6 +47,7 @@ public class BankingSystemCli {
 	static {
 		scanner = new Scanner(System.in);
 	}
+	static Logger myLogger = Logger.getLogger(BankingSystemCli.class.getName());
 
 	/**
 	 * 
@@ -55,12 +59,14 @@ public class BankingSystemCli {
 	 * @throws RequestCannotBeProcessedException
 	 * @throws NoServicesMadeException
 	 * @throws UserNotFoundException
-	 * @throws AccountsNotFoundException 
+	 * @throws AccountsNotFoundException
 	 */
 	public static void main(String[] args) throws InvalidCredentialsException, InternalServerException,
 			AccountNotCreatedException, NoTransactionsExistException, RequestCannotBeProcessedException,
 			NoServicesMadeException, UserNotFoundException, AccountsNotFoundException {
 		System.out.println("WELCOME TO BANKING SYSTEM!");
+		PropertyConfigurator.configure("src/log4j.properties");
+		myLogger.info("Application Starts.");
 
 		while (true) {
 			System.out.println("***********************************************");
@@ -96,6 +102,8 @@ public class BankingSystemCli {
 		System.out.print("Password : ");
 		login.setPassword(scanner.next());
 
+		myLogger.info("Login attempted.");
+
 		// Validate values before logging in
 
 		if (login.getUserId().contains("AD")) {
@@ -126,6 +134,7 @@ public class BankingSystemCli {
 
 	public static void onAdminLogin(AdminService service) throws AccountNotCreatedException, InternalServerException,
 			NoTransactionsExistException, UserNotFoundException {
+		myLogger.info("Logged in as Admin.");
 		while (true) {
 			int choice;
 			System.out.println("***********************************************");
@@ -155,6 +164,8 @@ public class BankingSystemCli {
 	private static void createNewAccount(AdminService service)
 			throws AccountNotCreatedException, InternalServerException, UserNotFoundException {
 		boolean backFlag = false;
+		myLogger.info("Create new account method initiated.");
+
 		while (true) {
 			System.out.println(
 					"Select option : \n1: Create new account for existing user. \n2: Create new account for new user. \n3: Back.");
@@ -180,6 +191,8 @@ public class BankingSystemCli {
 
 	private static void createNewAccountForExistingUser(AdminService service)
 			throws InternalServerException, UserNotFoundException {
+
+		myLogger.info("Create new account for existing user method initiated.");
 		System.out.print("Enter customer userId : ");
 		String userId = scanner.next();
 
@@ -210,15 +223,19 @@ public class BankingSystemCli {
 
 		boolean isCreated = service.saveExistingUser(newCustomer);
 
-		if (isCreated)
+		if (isCreated) {
 			System.out.println("Account created successfully");
-		else
+			myLogger.info("New account created for existing user.");
+		} else {
 			System.out.println("Account could not be created now.\\nPlease try again later.");
+			myLogger.info("New account creation failed.");
+		}
 	}
 
 	private static void createNewUserAccount(AdminService service)
 			throws AccountNotCreatedException, InternalServerException {
 
+		myLogger.info("Create new account method initiated for new user.");
 		SignUp newSignUp = new SignUp();
 		AccountType accType = null;
 
@@ -297,10 +314,12 @@ public class BankingSystemCli {
 		long newCustomerAccountNo = service.createNewAccount(newSignUp);
 
 		System.out.println("New Account opened successfully with account number: " + newCustomerAccountNo);
+		myLogger.info("New user registered and new account created.");
 	}
 
 	private static void viewTransactions(AdminService service)
 			throws NoTransactionsExistException, InternalServerException {
+		myLogger.info("View transactions method initiated by admin.");
 		System.out.print("Enter Customer's Account Number : ");
 		long accountNumber = scanner.nextLong();
 
@@ -313,6 +332,7 @@ public class BankingSystemCli {
 
 		for (Transaction txn : transactions)
 			System.out.println(txn);
+		myLogger.info("List of transactions printed by admin.");
 	}
 
 	/**
@@ -322,11 +342,13 @@ public class BankingSystemCli {
 	 * @throws NoTransactionsExistException
 	 * @throws RequestCannotBeProcessedException
 	 * @throws NoServicesMadeException
-	 * @throws AccountsNotFoundException 
+	 * @throws AccountsNotFoundException
 	 */
 
-	public static void onCustomerLogin(Customer customer, CustomerService service) throws NoTransactionsExistException,
-			InternalServerException, RequestCannotBeProcessedException, NoServicesMadeException, AccountsNotFoundException {
+	public static void onCustomerLogin(Customer customer, CustomerService service)
+			throws NoTransactionsExistException, InternalServerException, RequestCannotBeProcessedException,
+			NoServicesMadeException, AccountsNotFoundException {
+		myLogger.info("Logged in as Customer.");
 		while (true) {
 			System.out.println("***********************************************");
 			System.out.println("Enter 1 to view statement");
@@ -373,6 +395,7 @@ public class BankingSystemCli {
 
 	private static void viewStatement(Customer customer, CustomerService service)
 			throws NoTransactionsExistException, InternalServerException {
+		myLogger.info("View statement method initiated by Customer.");
 		int statementChoice;
 		System.out.println("***********************************************");
 		System.out.println("Enter 1 to view mini-statement");
@@ -398,6 +421,7 @@ public class BankingSystemCli {
 
 	private static void viewMiniStatement(Customer customer, CustomerService service)
 			throws NoTransactionsExistException, InternalServerException {
+		myLogger.info("View mini statement method initiated by Customer.");
 		if (customer.getTransactions() == null) {
 			// First request
 			List<Transaction> transactions = service.listTransactions(customer.getAccountNumber());
@@ -410,10 +434,12 @@ public class BankingSystemCli {
 				+ "Transaction Type\t" + "Transaction Description");
 		for (int i = 0; i < 10; i++)
 			System.out.println(transactions.get(i));
+		myLogger.info("Mini statement printed by Customer.");
 	}
 
 	private static void viewDetailedStatement(Customer customer, CustomerService service)
 			throws NoTransactionsExistException, InternalServerException {
+		myLogger.info("View detailed statement method initiated by Customer.");
 		if (customer.getTransactions() == null) {
 			// First request
 			List<Transaction> transactions = service.listTransactions(customer.getAccountNumber());
@@ -426,10 +452,12 @@ public class BankingSystemCli {
 				+ "Transaction Type\t" + "Transaction Description");
 		for (Transaction txn : transactions)
 			System.out.println(txn);
+		myLogger.info("Detailed statement printed by Customer.");
 	}
 
 	private static void changeDetails(Customer customer, CustomerService service) throws InternalServerException {
 
+		myLogger.info("Change details method initiated by Customer.");
 		System.out.println("MODIFYING EXISTING CUSTOMER DETAILS");
 		System.out.println(customer);
 
@@ -443,6 +471,7 @@ public class BankingSystemCli {
 			case 1:
 				System.out.println("Enter new mobile number: ");
 				String newContact;
+				myLogger.info("Change mobile number method initiated by Customer.");
 				do {
 					newContact = scanner.next();
 				} while (!service.validateMobile(newContact));
@@ -450,34 +479,45 @@ public class BankingSystemCli {
 				if (isContactChanged) {
 					customer.setMobileNumber(newContact);
 					System.out.println("Contact details updated successfully");
-				} else
+					myLogger.info("Mobile number changed by customer successfully.");
+				} else {
 					System.out.println("Details could not be updated now.\\nPlease try again later.");
+					myLogger.info("Change mobile number by customer unsuccessful.");
+				}
 				break;
 			case 2:
 				System.out.println("Enter new address: ");
 				String newAddress = scanner.next();
+				myLogger.info("Change address method initiated by Customer.");
 				boolean isAddressChanged = service.changeAddress(newAddress, customer.getAccountNumber());
 				if (isAddressChanged) {
 					customer.setAddress(newAddress);
 					System.out.println("Address details updated successfully");
-				} else
+					myLogger.info("Address changed by Customer successfully.");
+				} else {
 					System.out.println("Details could not be updated now.\nPlease try again later.");
+					myLogger.info("Address change by customer unsuccessful.");
+				}
 				break;
 			case -1:
 				backFlag = true;
 				break;
 			default:
 				System.out.println("Invalid choice entered");
+
 				break;
 			}
-			if (backFlag)
+			if (backFlag) {
+				myLogger.info("Invalid choice entered by customer.");
 				break;
+			}
 		}
 
 	}
 
 	private static void requestChequeBook(Customer customer, CustomerService service)
 			throws RequestCannotBeProcessedException, InternalServerException {
+		myLogger.info("Request Cheque Book method initiated by Customer.");
 		System.out.println("Do you want to request a new cheque book?\n1. Yes.\n2. No.");
 		int inputChoice = scanner.nextInt();
 
@@ -491,22 +531,27 @@ public class BankingSystemCli {
 				newRequest.setStatus(0);
 				service.requestForCheckBook(newRequest);
 				System.out.println("Successfully requested for a new cheque book.");
+				myLogger.info("New cheque book requested successfully by Customer.");
 				break;
 			case 2:
 				backFlag = true;
+				myLogger.info("No new cheque book requested by Customer.");
 				break;
 			default:
 				System.out.println("Invalid choice entered.");
 				break;
 			}
-			if (backFlag)
+			if (backFlag) {
+				myLogger.info("Invalid choice entered by customer.");
 				break;
+			}
 		}
 	}
 
 	private static void trackService(Customer customer, CustomerService service)
 			throws NoServicesMadeException, InternalServerException {
-		
+
+		myLogger.info("Track service method initiated by Customer.");
 		if (customer.getRequests() == null) {
 			// First request to view progress
 			List<Request> requests = service.getRequests(customer.getAccountNumber());
@@ -515,14 +560,19 @@ public class BankingSystemCli {
 
 		List<Request> requests = customer.getRequests();
 
-		for (Request request : requests)
+		for (Request request : requests) {
 			System.out.println(request);
+			myLogger.info("List of requests and status printed by Customer.");
+		}
 	}
 
-	private static void fundTransfer(Customer customer, CustomerService service) throws InternalServerException, AccountsNotFoundException {
+	private static void fundTransfer(Customer customer, CustomerService service)
+			throws InternalServerException, AccountsNotFoundException {
 		boolean backFlag = false;
+		myLogger.info("Fund transfer method initiated by Customer.");
 		while (true) {
-			System.out.println("Please select one of the follworing options: \n1. Transfer funds to your other account.\n2.Tranfer funds to acoount of other customers.");
+			System.out.println(
+					"Please select one of the follworing options: \n1. Transfer funds to your other account.\n2.Tranfer funds to acoount of other customers.");
 			int inputChoice = scanner.nextInt();
 			switch (inputChoice) {
 			case 1:
@@ -538,67 +588,80 @@ public class BankingSystemCli {
 				System.out.println("Invalid input entered.");
 				break;
 			}
-			if (backFlag)
+			if (backFlag) {
+				myLogger.info("Invalid choice entered by Customer.");
 				break;
+			}
 		}
 	}
 
-	private static void transferAccrossAccounts(Customer customer, CustomerService service) throws InternalServerException, AccountsNotFoundException {
-		Account otherAccount = service.fetchOtherExistingAccount(customer.getAccountNumber(), customer.getAccountType());
-		
+	private static void transferAccrossAccounts(Customer customer, CustomerService service)
+			throws InternalServerException, AccountsNotFoundException {
+		myLogger.info("Fund transfer across same user's different accounts initiated by Customer.");
+		Account otherAccount = service.fetchOtherExistingAccount(customer.getAccountNumber(),
+				customer.getAccountType());
+
 		System.out.println("***** FROM ACCOUNT *****");
 		System.out.println(customer.getAccountNumber() + "\t" + customer.getName());
 		System.out.println("***** TO ACCOUNT *****");
 		System.out.println(otherAccount.getAccountNumber() + "\t" + customer.getName());
-		
+
 		System.out.print("Please enter the amount: ");
 		double transferAmount = scanner.nextDouble();
 		System.out.print("Please enter your transaction password: ");
 		String txnPwd = scanner.next();
 		System.out.print("Enter message for fund transfer: ");
 		String txnDesc = scanner.next();
-		
+
 		boolean isValidTxnAmt = service.validateTransactionAmount(customer, transferAmount);
 		boolean isValidPwd = service.validateTransactionPassword(customer, txnPwd);
-		
+
 		if (!isValidTxnAmt) {
 			System.out.println("Insufficient funds in your account.");
-			return;
-		} if (!isValidPwd) {
-			System.out.println("Invalid password entered for transaction.");
+			myLogger.info("Invalid transaction amount entered by Customer.");
 			return;
 		}
-		
+		if (!isValidPwd) {
+			System.out.println("Invalid password entered for transaction.");
+			myLogger.info("Invalid transaction password entered by Customer.");
+			return;
+		}
+
 		Transaction txnDetails = new Transaction();
 		txnDetails.setTransactionAmount(transferAmount);
 		txnDetails.setTransactionDescription(txnDesc);
-		
+
 		boolean isTransferred = service.transferFund(customer, otherAccount, txnDetails);
-		if (isTransferred)
+		if (isTransferred) {
 			System.out.println("Successfully transferred funds.");
-		else
+			myLogger.info("Fund transfer successful.");
+		} else {
 			System.out.println("Could not transfer funds at this moment, try again later.");
-			
+			myLogger.info("Fund transfer unsuccessful.");
+		}
 	}
 
 	private static void transferAcrossUsers(Customer customer, CustomerService service) throws InternalServerException {
+
+		myLogger.info("Fund transfer to other user's account method initiated by Customer.");
 		List<Account> beneficiaries = service.fetchBeneficiaries(customer.getAccountNumber());
-		
+
 		while (true) {
 			boolean isBeneficiaryAdded = beneficiaries.size() == 0;
-			if (isBeneficiaryAdded) 
+			if (isBeneficiaryAdded)
 				System.out.println("No Beneficiaries added. Please add a beneficiary to tranfer money.");
-			
+
 			System.out.println("  Account Number\tNickName");
-			for (int index = 1 ; index <= beneficiaries.size(); index++)
-				System.out.println(index + " "+ beneficiaries.get(index).getAccountNumber() + "\t" + beneficiaries.get(index).getNickName());
-			
+			for (int index = 1; index <= beneficiaries.size(); index++)
+				System.out.println(index + " " + beneficiaries.get(index).getAccountNumber() + "\t"
+						+ beneficiaries.get(index).getNickName());
+
 			if (isBeneficiaryAdded)
 				System.out.println("Please enter a number in the range 1 - " + beneficiaries.size());
 			System.out.println("Press 0 to add a beneficiary.\nPress -1 to go back.");
-			
+
 			int inputChoice = scanner.nextInt();
-			
+
 			if (inputChoice == 0) {
 				System.out.print("Enter beneficiary account number: ");
 				long accountNumber = scanner.nextLong();
@@ -607,13 +670,16 @@ public class BankingSystemCli {
 				Account newBeneficiary = new Account();
 				newBeneficiary.setAccountNumber(accountNumber);
 				newBeneficiary.setNickName(nickName);
-				
+
 				boolean isAdded = service.addNewBeneficiary(customer.getAccountNumber(), newBeneficiary);
 				if (isAdded) {
 					System.out.println("Beneficiary added.");
 					beneficiaries.add(newBeneficiary);
-				} else
+					myLogger.info("New beneficiary added by Customer.");
+				} else {
 					System.out.println("Beneficiary could not be added now, try again later");
+					myLogger.info("Adding new beneficiary unsuccessful.");
+				}
 			} else if (inputChoice <= beneficiaries.size()) {
 				System.out.print("Please enter the amount: ");
 				double transferAmount = scanner.nextDouble();
@@ -621,41 +687,53 @@ public class BankingSystemCli {
 				String txnPwd = scanner.next();
 				System.out.print("Enter message for fund transfer: ");
 				String txnDesc = scanner.next();
-				
+
 				double limit = service.getTransactionLimit();
-				
+
 				boolean isValidTxnLimit = transferAmount <= limit;
 				boolean isValidTxnAmt = service.validateTransactionAmount(customer, transferAmount);
 				boolean isValidPwd = service.validateTransactionPassword(customer, txnPwd);
-				
+
 				if (!isValidTxnAmt) {
 					System.out.println("Insufficient funds in your account, or transaction");
-					return;
-				} if (!isValidPwd) {
-					System.out.println("Invalid password entered for transaction.");
-					return;
-				} if (!isValidTxnLimit) {
-					System.out.println("Can't transfer an amount more than 10 Lakhs.");
+					myLogger.info("Insufficient funds for transfer requested by customer.");
 					return;
 				}
-				
+				if (!isValidPwd) {
+					System.out.println("Invalid password entered for transaction.");
+					myLogger.info("Invalid transaction password entered by Customer.");
+					return;
+				}
+				if (!isValidTxnLimit) {
+					System.out.println("Can't transfer an amount more than 10 Lakhs.");
+					myLogger.info("Invalid transaction amount entered by Customer.");
+					return;
+				}
+
 				Transaction txnDetails = new Transaction();
 				txnDetails.setTransactionAmount(transferAmount);
 				txnDetails.setTransactionDescription(txnDesc);
-				
+
 				boolean isTransferred = service.transferFund(customer, beneficiaries.get(inputChoice), txnDetails);
-				if (isTransferred)
+				if (isTransferred) {
 					System.out.println("Successfully transferred funds.");
-				else
+					myLogger.info("Fund transfered successfully by Customer.");
+				} else {
 					System.out.println("Could not transfer funds at this moment, try again later.");
-			} else if (inputChoice == -1)
+					myLogger.info("Fund transfer unsuccessful.");
+				}
+			} else if (inputChoice == -1) {
+				myLogger.info("Previous page requested by Customer.");
 				break; // Go to previous page.
-			else 
+			} else {
 				System.out.println("Please enter a valid choice.");
+				myLogger.info("Invalid choice entered by Customer.");
+			}
 		}
 	}
 
 	private static void changePassword(Customer customer, CustomerService service) throws InternalServerException {
+		myLogger.info("Password change requested by Customer.");
 		while (true) {
 			System.out.println("Please enter old password: ");
 			String oldPassword = scanner.next();
@@ -674,423 +752,29 @@ public class BankingSystemCli {
 
 			if (!oldPassword.equals(customer.getPassword())) {
 				System.out.println("Invalid Old password");
+				myLogger.info("Invalid old password entered by Customer.");
 				break;
 			}
 			if (!(confirmPassword.equals(newPassword))) {
 				System.out.println("Passwords don't match");
+				myLogger.info("Unmatching old passwords entered by Customer.");
 				break;
 			}
 			boolean result = service.updatePassword(newPassword, customer.getUserId());
 
-			if (result)
+			if (result) {
 				System.out.println("Successfully updated password.");
-			else
+				myLogger.info("Password updated by Customer.");
+			} else {
 				System.out.println("Password could not be updated now, try again later");
+				myLogger.info("Password change unsuccessful.");
+			}
 		}
 	}
 
 	private static void viewProfile(Customer customer, CustomerService service) {
+		myLogger.info("View profile method initiated by Customer.");
 		System.out.println(customer);
 	}
 
 }
-
-///**
-// * 
-// */
-//package com.cg.BankingSystem.cli;
-//
-//import java.util.List;
-//import java.util.Scanner;
-//
-//import javax.swing.text.DefaultEditorKit.CutAction;
-//
-//import com.cg.BankingSystem.dao.AdminDao;
-//import com.cg.BankingSystem.dao.AdminDaoImpl;
-//import com.cg.BankingSystem.dto.AccountType;
-//import com.cg.BankingSystem.dto.Admin;
-//import com.cg.BankingSystem.dto.Customer;
-//import com.cg.BankingSystem.dto.LoginBean;
-//import com.cg.BankingSystem.dto.SignUp;
-//import com.cg.BankingSystem.dto.Transaction;
-//import com.cg.BankingSystem.exception.AccountNotCreatedException;
-//import com.cg.BankingSystem.exception.InternalServerException;
-//import com.cg.BankingSystem.exception.InvalidCredentialsException;
-//import com.cg.BankingSystem.exception.NoTransactionsExistException;
-//import com.cg.BankingSystem.service.AdminService;
-//import com.cg.BankingSystem.service.AdminServiceImpl;
-//import com.cg.BankingSystem.service.BankingSystemService;
-//import com.cg.BankingSystem.service.CustomerService;
-//import com.cg.BankingSystem.service.CustomerServiceImpl;
-//
-///**
-// * @author admin
-// *
-// */
-//public class BankingSystemCli {
-//
-//	/**
-//	 * Static objects defined
-//	 */
-//	private static Scanner scanner;
-//	private static CustomerService customerService;
-//	private static AdminService adminService;
-//
-//	/**
-//	 * Static block, implements even before the main method
-//	 */
-//	static {
-//		scanner = new Scanner(System.in);
-//
-//	}
-//
-//	/**
-//	 * 
-//	 * @param args
-//	 * @throws AccountNotCreatedException
-//	 * @throws InternalServerException
-//	 * @throws InvalidCredentialsException
-//	 * @throws NoTransactionsExistException 
-//	 */
-//	public static void main(String[] args)
-//			throws InvalidCredentialsException, InternalServerException, AccountNotCreatedException, NoTransactionsExistException {
-//		int userTypeChoice;
-//		System.out.println("WELCOME TO BANKING SYSTEM!");
-//		do {
-//			System.out.println("***********************************************");
-//			System.out.println("Enter 1 to Sign In.");
-//			System.out.println("Enter 0 to Exit.");
-//			System.out.println("***********************************************");
-//			userTypeChoice = scanner.nextInt();
-//			switch (userTypeChoice) {
-//			case 1:
-//				signIn();
-//				break;
-//			case 0:
-//				System.out.println("TERMINATED !");
-//				System.exit(0);
-//			default:
-//				System.out.println("Invalid choice entered.\nProvide a valid input.");
-//			}
-//		} while (true);
-//	}
-//
-//	private static void signIn()
-//			throws InvalidCredentialsException, InternalServerException, AccountNotCreatedException, NoTransactionsExistException {
-//		System.out.println("***********************************************");
-//		System.out.println("Sign In: ");
-//		LoginBean login = new LoginBean();
-//		String userId;
-//		String password;
-//		System.out.print("Enter User ID : ");
-//		userId = scanner.next();
-//		System.out.print("Enter your Password : ");
-//		password = scanner.next();
-//
-//		login.setUserId(userId);
-//		login.setPassword(password);
-//
-//		BankingSystemService bankingService = BankingSystemService.getInstance(login);
-//		if (bankingService.getClass() == AdminServiceImpl.class) {
-//			Admin adminLogin = (Admin) bankingService.authenticateUser(login);
-//			System.out.println("Logged in successfully as Admin. Welcome " + adminLogin.getUserName());
-//			adminLogin();
-//		} else if (bankingService.getClass() == CustomerServiceImpl.class) {
-//			Customer customerLogin = (Customer) bankingService.authenticateUser(login);
-//			System.out.println("Logged in successfully as Customer. Welcome " + customerLogin.getName());
-//			customerLogin();
-//		}
-//		else {
-//			System.out.println("User ID not present in database");
-//		}
-//
-//	}
-//
-//	/**
-//	 * Admin methods
-//	 * 
-//	 * @throws InternalServerException
-//	 * @throws AccountNotCreatedException
-//	 * @throws NoTransactionsExistException 
-//	 */
-//
-//	public static void adminLogin() throws AccountNotCreatedException, InternalServerException, NoTransactionsExistException {
-//		do {
-//			int choice;
-//			System.out.println("***********************************************");
-//			System.out.println("Enter 1 to create new account");
-//			System.out.println("Enter 2 to view transactions");
-//			System.out.println("Enter 0 to exit.");
-//			System.out.println("***********************************************");
-//			choice = scanner.nextInt();
-//			switch (choice) {
-//			case 1:
-//				CreateNewAccount();
-//				break;
-//			case 2:
-//				ViewTransactions();
-//				break;
-//			case 0:
-//				System.exit(0); // Exiting the control when 0 is entered.
-//			default:
-//				System.out.println("Invalid choice entered"); // Default message when none of 0 - 3 is entered
-//			}
-//		} while (true);
-//
-//	}
-//
-//	private static void CreateNewAccount() throws AccountNotCreatedException, InternalServerException {
-//
-//		int existinguserchoice;
-//		System.out.print("Select option : \n 1: Create new account for existing user \n 2: Create new account for new user");
-//		existinguserchoice = scanner.nextInt();
-//		do {
-//			switch (existinguserchoice) {
-//			case 1:
-//				CreateNewAccountForExistingUser();
-//				break;
-//			case 2:
-//				CreateNewUserAccount();
-//				break;
-//			default:
-//				System.out.println("Invalid choice entered");
-//			}
-//		} while (existinguserchoice != 1 || existinguserchoice != 2);
-//	}
-//
-//	private static void CreateNewAccountForExistingUser() {
-//		String userId;
-//		System.out.print("Enter customer userId : ");
-//		userId = scanner.next();
-//
-//		// find customer with userid and create new account
-//
-//	}
-//
-//	private static void CreateNewUserAccount() throws AccountNotCreatedException, InternalServerException {
-//
-//		SignUp newSignUp = new SignUp();
-//		int accountTypeChoice;
-//
-//		// long accNo; ---should be auto-generated
-//
-//		String name;
-//		String address;
-//		String mobileNo;
-//		String email;
-//		AccountType accType = null;
-//		int openingBal;
-//		String panCardNumber;
-//		String userId;
-//		String password;
-//		String transactionPassword;
-//
-//		System.out.print("Enter customer name : ");
-//		name = scanner.next();
-//		System.out.print("Enter customer address : ");
-//		address = scanner.next();
-//		System.out.print("Enter customer mobile number : ");
-//		mobileNo = scanner.next();
-//		System.out.print("Enter customer email : ");
-//		email = scanner.next();
-//		System.out.print("Select customer account type : \n 1: for Savings account \n 2: For current account");
-//		accountTypeChoice = scanner.nextInt();
-//		do {
-//			switch (accountTypeChoice) {
-//			case 1:
-//				accType = AccountType.SAVINGS_ACCOUNT;
-//				break;
-//			case 2:
-//				accType = AccountType.CURRENT_ACCOUNT;
-//				break;
-//			default:
-//				System.out.println("Invalid choice entered");
-//			}
-//		} while (accountTypeChoice != 1 || accountTypeChoice != 2);
-//		System.out.print("Enter customer opening balance : ");
-//		openingBal = scanner.nextInt();
-//		System.out.print("Enter customer PAN no. : ");
-//		panCardNumber = scanner.next();
-//		System.out.print("Enter customer user ID : ");
-//		userId = scanner.next();
-//		System.out.print("Enter customer password : ");
-//		password = scanner.next();
-//		System.out.print("Enter customer transaction password : ");
-//		transactionPassword = scanner.next();
-//
-//		newSignUp.setAccountType(accType);
-//		newSignUp.setAddress(address);
-//		newSignUp.setEmail(email);
-//		newSignUp.setMobileNo(mobileNo);
-//		newSignUp.setName(name);
-//		newSignUp.setOpeningBal(openingBal);
-//		newSignUp.setPanCardNumber(panCardNumber);
-//		newSignUp.setUserId(userId);
-//		newSignUp.setPassword(password);
-//		newSignUp.setTransactionPassword(transactionPassword);
-//
-//		long newCustomerAccountNo = adminService.createNewAccount(newSignUp);
-//		System.out.println("New Account opened successfully with account no.: " + newCustomerAccountNo);
-//
-//	}
-//
-//	private static void ViewTransactions() throws NoTransactionsExistException, InternalServerException {
-//
-//		System.out.print("Enter customer account number : ");
-//		long accountNumber = scanner.nextLong();
-//		List<Transaction> Transactions = adminService.listTransactions(accountNumber);
-//		System.out.println("List of transactions:-");
-//		System.out.println("Account No.\t" + "Transaction ID\t" + "Transaction Date\t" + "Transaction Amount\t"
-//				+ "Transaction Type\t" + "Transaction Description");
-//		for (Transaction trans : Transactions) {
-//			System.out.println(trans.getAccountNo() + "\t" + trans.getTransactionID() + "\t"
-//					+ trans.getTransactionDate() + "\t" + trans.getTransactionAmount() + "\t"
-//					+ trans.getTransactionType() + "\t" + trans.getTransactionDescription());
-//		}
-//
-//	}
-//
-//	/**
-//	 * Client methods
-//	 */
-//
-//	public static void customerLogin() {
-//		do {
-//			int customerChoice;
-//			System.out.println("***********************************************");
-//			System.out.println("Enter 1 to view statement");
-//			System.out.println("Enter 2 to change personal details");
-//			System.out.println("Enter 3 for cheque book service request");
-//			System.out.println("Enter 4 to track service request");
-//			System.out.println("Enter 5 for fund transfer");
-//			System.out.println("Enter 6 to change password");
-//			System.out.println("Enter 0 to exit.");
-//			System.out.println("***********************************************");
-//			
-//			customerChoice = scanner.nextInt();
-//			switch (customerChoice) {
-//			case 1:
-//				ViewStatement();
-//				break;
-//			case 2:
-//				ChangeDetails();
-//				break;
-//			case 3:
-//				RequestChequeBook();
-//				break;
-//			case 4:
-//				TrackService();
-//				break;
-//			case 5:
-//				FundTransfer();
-//				break;
-//			case 6:
-//				ChangePassword();
-//				break;
-//			case 0:
-//				System.exit(0); // Exiting the control when 0 is entered.
-//			default:
-//				System.out.println("Invalid choice entered"); //
-//			}
-//		} while (true);
-//
-//	}
-//
-//	private static void ViewStatement() {
-//		int statementChoice;
-//		System.out.println("***********************************************");
-//		System.out.println("Enter 1 to view mini-statement");
-//		System.out.println("Enter 2 to view detailed-statement");
-//		System.out.println("***********************************************");
-//		statementChoice = scanner.nextInt();
-//		do {
-//			switch (statementChoice) {
-//			case 1:
-//				ViewMiniStatement();
-//				break;
-//			case 2:
-//				ViewDetailedStatement();
-//				break;
-//			case 0:
-//				System.exit(0); // Exiting the control when 0 is entered.
-//			default:
-//				System.out.println("Invalid choice entered"); //
-//			}
-//		} while (true);
-//
-//	}
-//
-//	private static void ViewMiniStatement() {
-//		// same as view transactions of admin --last 10 trans
-//
-//	}
-//
-//	private static void ViewDetailedStatement() {
-//		// same as view transactions of admin --should be able to view all accounts
-//		// transactions
-//	}
-//
-//	private static void ChangeDetails() {
-//
-//		// displays current details
-//		
-//		System.out.println("MODIFYING EXISTING CUSTOMER DETAILS");
-//		String custId = "";
-//		do {
-//			System.out.print("Enter Employee ID : ");
-//			custId = scanner.next();
-//		} while (/**validate custid*/);
-//		
-//		
-//	}
-//
-//	private static void RequestChequeBook() {
-//		// TODO Auto-generated method stub
-//
-//	}
-//
-//	private static void TrackService() {
-//		// TODO Auto-generated method stub
-//
-//	}
-//
-//	private static void FundTransfer() {
-//		int fundTransfer;
-//		System.out.println("***********************************************");
-//		System.out.println("Enter 1 to view mini-statement");
-//		System.out.println("Enter 2 to view detailed-statement");
-//		System.out.println("***********************************************");
-//		fundTransfer = scanner.nextInt();
-//		do {
-//			switch (fundTransfer) {
-//			case 1:
-//				SameCustomerTransfer();
-//				break;
-//			case 2:
-//				DifferentCustomerTransfer();
-//				break;
-//			case 0:
-//				System.exit(0); // Exiting the control when 0 is entered.
-//			default:
-//				System.out.println("Invalid choice entered"); //
-//			}
-//		} while (true);		
-//
-//	}
-//
-//	private static void DifferentCustomerTransfer() {
-//		
-//		
-//	}
-//
-//	private static void SameCustomerTransfer() {
-//		// TODO Auto-generated method stub
-//		
-//	}
-//
-//	private static void ChangePassword() {
-//		// TODO Auto-generated method stub
-//
-//	}
-//
-//}

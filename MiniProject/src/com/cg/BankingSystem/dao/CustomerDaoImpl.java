@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.cg.BankingSystem.dto.Account;
 import com.cg.BankingSystem.dto.AccountType;
@@ -24,6 +25,8 @@ import com.cg.BankingSystem.exception.RequestCannotBeProcessedException;
 
 public class CustomerDaoImpl implements CustomerDao {
 
+	static Logger myLogger = Logger.getLogger(CustomerDaoImpl.class.getName());
+
 	@Override
 	public Customer authenticateUser(LoginBean bean) throws InternalServerException, InvalidCredentialsException {
 		Connection conn = null;
@@ -37,9 +40,10 @@ public class CustomerDaoImpl implements CustomerDao {
 
 			ResultSet credCheckResult = checkCredStmt.executeQuery();
 
-			if (!credCheckResult.next())
+			if (!credCheckResult.next()) {
+				myLogger.info("Invalid credentials entered by Customer. InvalidCredentialsException thrown.");
 				throw new InvalidCredentialsException("Invalid Credentials!\nPlease enter valid credentials.");
-
+			}
 			PreparedStatement fetchCustomerStmt = conn
 					.prepareStatement(BankingSystemDao.Queries.GET_CUSTOMER_DETAILS_QUERY.getValue());
 			PreparedStatement fetchAccountStmt = conn
@@ -55,9 +59,10 @@ public class CustomerDaoImpl implements CustomerDao {
 			ResultSet accountDetails = fetchAccountStmt.executeQuery();
 			ResultSet txnDetails = fetchTxnPwdStmt.executeQuery();
 
-			if (!customerDetails.next() || !accountDetails.next() || !txnDetails.next())
+			if (!customerDetails.next() || !accountDetails.next() || !txnDetails.next()) {
+				myLogger.info("Error fetching customer account details from database. InternalServerException thrown");
 				throw new InternalServerException("Server is facing issues, please try again later.");
-
+			}
 			Customer fetchedCustomer = new Customer();
 
 			fetchedCustomer.setAccountNumber(accountDetails.getLong(1));
@@ -72,8 +77,10 @@ public class CustomerDaoImpl implements CustomerDao {
 			fetchedCustomer.setPassword(bean.getPassword());
 			fetchedCustomer.setTransactionPassword(txnDetails.getString(1));
 
+			myLogger.info("Successfully fetched customer account details from database.");
 			return fetchedCustomer;
 		} catch (SQLException e) {
+			myLogger.info("Error fetching customer account details from database. InternalServerException thrown");
 			throw new InternalServerException(e.getMessage());
 		} finally {
 			try {
@@ -94,7 +101,7 @@ public class CustomerDaoImpl implements CustomerDao {
 			conn = JDBCUtil.getConnection();
 			PreparedStatement getTxnsStmt = conn
 					.prepareStatement(BankingSystemDao.Queries.GET_TRANSACTIONS_QUERY.getValue());
-			;
+
 			getTxnsStmt.setLong(1, accountNumber); // Setting account id for which transactions is needed
 
 			ResultSet txnsFetched = getTxnsStmt.executeQuery();
@@ -113,11 +120,15 @@ public class CustomerDaoImpl implements CustomerDao {
 				transactions.add(transaction);
 			}
 
-			if (transactions.size() == 0)
+			if (transactions.size() == 0) {
+				myLogger.info("Error fetching transactions from database. NoTransactionsExistException thrown");
 				throw new NoTransactionsExistException("No transactions found for user: " + accountNumber);
-
+			}
+			myLogger.info("Successfully fetched transactions from database.");
 			return transactions;
 		} catch (SQLException ex) {
+			myLogger.info(
+					"Error performing fetch transactions operation from database. InternalServerException thrown");
 			throw new InternalServerException(ex.getMessage());
 		} finally {
 			try {
@@ -142,10 +153,14 @@ public class CustomerDaoImpl implements CustomerDao {
 
 			int rowsAffected = updatePwdStmt.executeUpdate();
 
-			if (rowsAffected > 0)
+			if (rowsAffected > 0) {
+				myLogger.info("Successfully changed customer password in database.");
 				return true;
+			}
+			myLogger.info("Error in changing customer password in database.");
 			return false;
 		} catch (SQLException e) {
+			myLogger.info("Error in changing customer password in database. InternalServerException thrown.");
 			throw new InternalServerException(e.getMessage());
 		} finally {
 			try {
@@ -167,10 +182,14 @@ public class CustomerDaoImpl implements CustomerDao {
 			updateContactStmt.setLong(2, accountNumber);
 			updateContactStmt.executeUpdate();
 			int rowsAffected = updateContactStmt.executeUpdate();
-			if (rowsAffected == 0)
+			if (rowsAffected == 0) {
+				myLogger.info("Error in changing customer contact number in database.");
 				return false;
+			}
+			myLogger.info("Successfully changed customer contact number in database.");
 			return true;
 		} catch (SQLException e) {
+			myLogger.info("Error in changing customer contact number in database. InternalServerException thrown.");
 			throw new InternalServerException(e.getMessage());
 		} finally {
 			try {
@@ -192,10 +211,14 @@ public class CustomerDaoImpl implements CustomerDao {
 			changeAddressStmt.setLong(2, accountNumber);
 			changeAddressStmt.executeUpdate();
 			int rowsAffected = changeAddressStmt.executeUpdate();
-			if (rowsAffected == 0)
+			if (rowsAffected == 0) {
+				myLogger.info("Error in changing customer address in database.");
 				return false;
+			}
+			myLogger.info("Successfully changed customer address in database.");
 			return true;
 		} catch (SQLException e) {
+			myLogger.info("Error in changing customer address in database. InternalServerException thrown.");
 			throw new InternalServerException(e.getMessage());
 		} finally {
 			try {
@@ -218,18 +241,22 @@ public class CustomerDaoImpl implements CustomerDao {
 			stmt.setDate(3, DatabaseUtilities.getSQLDate(request.getRequestDate()));
 
 			int rowsAffected = stmt.executeUpdate();
-			if (rowsAffected == 0)
+			if (rowsAffected == 0) {
+				myLogger.info(
+						"Error in adding cheque book request in service_tracker table in database. RequestCannotBeProcessedException thrown.");
 				throw new RequestCannotBeProcessedException(
 						"Request could not be made for a cheque book.\nPlease try again later");
-
+			}
 			ResultSet rs = conn.createStatement().executeQuery(Queries.REQUEST_ID_QUERY.getValue());
 			if (!rs.next()) {
 				// Revert adding the value in service tracker table
-				throw new InternalServerException("Request cannot be processed not.\nPlease try again later.");
+				myLogger.info("Error in fetching service number from database. InternalServerException thrown.");
+				throw new InternalServerException("Request cannot be processed now.\nPlease try again later.");
 			}
-
+			myLogger.info("Successfully added new cheque book service request to service_tracker table in database.");
 			return rs.getInt(1);
 		} catch (SQLException e) {
+			myLogger.info("Error in adding cheque book request in database. InternalServerException thrown.");
 			throw new InternalServerException(e.getMessage());
 		} finally {
 			try {
@@ -265,11 +292,14 @@ public class CustomerDaoImpl implements CustomerDao {
 				requests.add(request);
 			}
 
-			if (requests.size() == 0)
+			if (requests.size() == 0) {
+				myLogger.info("Can't find any requests in database. NoServicesMadeException thrown.");
 				throw new NoServicesMadeException("User has no pending service requests.");
-
+			}
+			myLogger.info("Successfully fetched requests made by customer from service_tracker table in database.");
 			return requests;
 		} catch (SQLException e) {
+			myLogger.info("Error fetching requests from database. InternalServerException thrown.");
 			throw new InternalServerException(e.getMessage());
 		} finally {
 			try {
@@ -281,36 +311,46 @@ public class CustomerDaoImpl implements CustomerDao {
 		}
 	}
 
-	
 	@Override
-	public Account fetchOtherExistingAccount(long accountNumber, AccountType accountType) throws AccountsNotFoundException, InternalServerException {
+	public Account fetchOtherExistingAccount(long accountNumber, AccountType accountType)
+			throws AccountsNotFoundException, InternalServerException {
 		Connection conn = null;
-		
+
 		try {
 			conn = JDBCUtil.getConnection();
-			PreparedStatement fetchOthrAcntsStmt = conn.prepareStatement(BankingSystemDao.Queries.GET_OTHER_ACCOUNTS_QUERY.getValue());
-			
+			PreparedStatement fetchOthrAcntsStmt = conn
+					.prepareStatement(BankingSystemDao.Queries.GET_OTHER_ACCOUNTS_QUERY.getValue());
+
 			fetchOthrAcntsStmt.setLong(1, accountNumber);
-			
-			String complimentaryAccountType = accountType == AccountType.SAVINGS_ACCOUNT ? AccountType.CURRENT_ACCOUNT.getValue() : AccountType.SAVINGS_ACCOUNT.getValue();
-			
+
+			String complimentaryAccountType = accountType == AccountType.SAVINGS_ACCOUNT
+					? AccountType.CURRENT_ACCOUNT.getValue()
+					: AccountType.SAVINGS_ACCOUNT.getValue();
+
 			fetchOthrAcntsStmt.setString(2, complimentaryAccountType);
-			
+
 			ResultSet results = fetchOthrAcntsStmt.executeQuery();
-			
+
 			int matchedEntry = 0;
-			if (results.next())
+			if (results.next()) {
+				myLogger.info(
+						"Successfully fetched alternate accounts of customer from accounts_master table in database.");
 				matchedEntry = results.getInt(1);
-			
-			if (matchedEntry == 0)
+			}
+			if (matchedEntry == 0) {
+				myLogger.info(
+						"Can't find any alternate accounts of customer from accounts_master table in database. AccountsNotFoundException thrown.");
 				throw new AccountsNotFoundException("No Alternate account for this user.");
-			
+			}
 			Account fetchedAccount = new Account();
 			fetchedAccount.setAccountNumber(accountNumber);
 			fetchedAccount.setAccountType(DatabaseUtilities.getAccountType(complimentaryAccountType));
-			
+
+			myLogger.info("Successfully added alternate account of customer to accounts_master table in database.");
 			return fetchedAccount;
 		} catch (SQLException e) {
+			myLogger.info(
+					"Error adding alternate account of customer to accounts_master table in database. InternalServerException thrown");
 			throw new InternalServerException(e.getMessage());
 		} finally {
 			try {
@@ -325,24 +365,28 @@ public class CustomerDaoImpl implements CustomerDao {
 	@Override
 	public List<Account> fetchBeneficiaries(long accountNumber) throws InternalServerException {
 		Connection conn = null;
-		
+
 		try {
 			conn = JDBCUtil.getConnection();
-			PreparedStatement fetchBnfcryStmt = conn.prepareStatement(BankingSystemDao.Queries.GET_BENEFICIARIES_QUERY.getValue());
+			PreparedStatement fetchBnfcryStmt = conn
+					.prepareStatement(BankingSystemDao.Queries.GET_BENEFICIARIES_QUERY.getValue());
 			fetchBnfcryStmt.setLong(1, accountNumber);
-			
+
 			ResultSet bnfcryDetails = fetchBnfcryStmt.executeQuery();
-			
+
 			List<Account> beneficiaries = new ArrayList<Account>();
-			while(bnfcryDetails.next()) {
+			while (bnfcryDetails.next()) {
 				Account account = new Account();
 				account.setAccountNumber(bnfcryDetails.getLong(1));
 				account.setNickName(bnfcryDetails.getString(2));
 				beneficiaries.add(account);
 			}
-			
+
+			myLogger.info("Successfully fetched beneficiaries of customer from beneficiary_details table in database.");
 			return beneficiaries;
 		} catch (SQLException e) {
+			myLogger.info(
+					"Error fetching beneficiaries of customer from beneficiary_details table in database. InternalServerException thrown");
 			throw new InternalServerException(e.getMessage());
 		} finally {
 			try {
@@ -355,63 +399,77 @@ public class CustomerDaoImpl implements CustomerDao {
 	}
 
 	@Override
-	public boolean transferFund(Customer fromAccount, Account otherAccount, Transaction txnDetails) throws InternalServerException {
+	public boolean transferFund(Customer fromAccount, Account otherAccount, Transaction txnDetails)
+			throws InternalServerException {
 		Connection conn = null;
-		
+
 		try {
 			conn = JDBCUtil.getConnection();
-			PreparedStatement creditBlncStmt = conn.prepareStatement(BankingSystemDao.Queries.GET_TRANSFER_ACCOUNT_BALANCE_QUERY.getValue());
-			PreparedStatement creditStmt = conn.prepareStatement(BankingSystemDao.Queries.CREDIT_ACCOUNT_BALANCE_QUERY.getValue());
-			PreparedStatement debitStmt = conn.prepareStatement(BankingSystemDao.Queries.DEBIT_ACCOUNT_BALANCE_QUERY.getValue());
-			
-			PreparedStatement creditTxnStmt = conn.prepareStatement(BankingSystemDao.Queries.ADD_TRANSACTION_DETAILS.getValue());
-			PreparedStatement debitTxnStmt = conn.prepareStatement(BankingSystemDao.Queries.ADD_TRANSACTION_DETAILS.getValue());
-			
+			PreparedStatement creditBlncStmt = conn
+					.prepareStatement(BankingSystemDao.Queries.GET_TRANSFER_ACCOUNT_BALANCE_QUERY.getValue());
+			PreparedStatement creditStmt = conn
+					.prepareStatement(BankingSystemDao.Queries.CREDIT_ACCOUNT_BALANCE_QUERY.getValue());
+			PreparedStatement debitStmt = conn
+					.prepareStatement(BankingSystemDao.Queries.DEBIT_ACCOUNT_BALANCE_QUERY.getValue());
+
+			PreparedStatement creditTxnStmt = conn
+					.prepareStatement(BankingSystemDao.Queries.ADD_TRANSACTION_DETAILS.getValue());
+			PreparedStatement debitTxnStmt = conn
+					.prepareStatement(BankingSystemDao.Queries.ADD_TRANSACTION_DETAILS.getValue());
+
 			creditBlncStmt.setLong(1, otherAccount.getAccountNumber());
-			
+
 			ResultSet balanceDetails = creditBlncStmt.executeQuery();
-			
-			if (!balanceDetails.next())
+
+			if (!balanceDetails.next()) {
+				myLogger.info(
+						"Error fetching account balance of customer from account_master table in database. InternalServerException thrown.");
 				throw new InternalServerException("Server Error, please try again later.");
-			
+			}
 			double toBalance = balanceDetails.getDouble(1);
 			double fromBalance = fromAccount.getBalance();
-			
+
 			debitStmt.setDouble(1, fromBalance - txnDetails.getTransactionAmount());
 			debitStmt.setLong(2, fromAccount.getAccountNumber());
-			
+
 			creditStmt.setDouble(1, toBalance + txnDetails.getTransactionAmount());
 			creditStmt.setLong(2, otherAccount.getAccountNumber());
-			
+
 			int debitRowsAffected = debitStmt.executeUpdate();
-			
-			if (debitRowsAffected == 0)
-				return false;
-			
-			int creditRowsAffected = creditStmt.executeUpdate();
-			
-			if(creditRowsAffected == 0) {
-				// Revert debiting from account
+
+			if (debitRowsAffected == 0) {
+				myLogger.info("Error transfering funds and updating debit account balance in database.");
 				return false;
 			}
-			
+
+			int creditRowsAffected = creditStmt.executeUpdate();
+
+			if (creditRowsAffected == 0) {
+				// Revert debiting from account
+				myLogger.info("Error transfering funds and updating credit account balance in database.");
+				return false;
+			}
+
 			creditTxnStmt.setString(1, txnDetails.getTransactionDescription());
 			creditTxnStmt.setDate(2, DatabaseUtilities.getSQLDate(LocalDate.now()));
 			creditTxnStmt.setString(3, TransactionType.CREDIT.getValue());
 			creditTxnStmt.setDouble(4, txnDetails.getTransactionAmount());
 			creditTxnStmt.setLong(5, otherAccount.getAccountNumber());
-			
+
 			debitTxnStmt.setString(1, txnDetails.getTransactionDescription());
 			debitTxnStmt.setDate(2, DatabaseUtilities.getSQLDate(LocalDate.now()));
 			debitTxnStmt.setString(3, TransactionType.DEBIT.getValue());
 			debitTxnStmt.setDouble(4, txnDetails.getTransactionAmount());
 			debitTxnStmt.setLong(5, fromAccount.getAccountNumber());
-			
+
 			creditTxnStmt.executeUpdate();
 			debitTxnStmt.executeUpdate();
-			
+
+			myLogger.info(
+					"Funds transferred successfully and debit account and credit account balance updated successfully in database.");
 			return true;
 		} catch (SQLException e) {
+			myLogger.info("Error transfering funds. InternalServerException thrown.");
 			throw new InternalServerException(e.getMessage());
 		} finally {
 			try {
@@ -426,93 +484,28 @@ public class CustomerDaoImpl implements CustomerDao {
 	@Override
 	public boolean addNewBeneficiary(long accountNumber, Account newBeneficiary) throws InternalServerException {
 		Connection conn = null;
-		
+
 		try {
 			conn = JDBCUtil.getConnection();
-			PreparedStatement addBnfcryStmt = conn.prepareStatement(BankingSystemDao.Queries.ADD_BENEFICIARY_QUERY.getValue());
-			
+			PreparedStatement addBnfcryStmt = conn
+					.prepareStatement(BankingSystemDao.Queries.ADD_BENEFICIARY_QUERY.getValue());
+
 			addBnfcryStmt.setLong(1, accountNumber);
 			addBnfcryStmt.setLong(2, newBeneficiary.getAccountNumber());
 			addBnfcryStmt.setString(3, newBeneficiary.getNickName());
-			
+
 			int rowsAffected = addBnfcryStmt.executeUpdate();
-			
-			if (rowsAffected == 0)
+
+			if (rowsAffected == 0) {
+				myLogger.info("Error adding beneficiary to benefeciary_details table.");
 				return false;
-			
+			}
+			myLogger.info("Successfully added beneficiary to beneficiary_details table in database.");
 			return true;
 		} catch (SQLException e) {
+			myLogger.info("Error adding beneficiary to database. InternalServerException thrown.");
 			throw new InternalServerException(e.getMessage());
 		}
 	}
-
-}
-	
-	
-	
-	
-//	@Override
-//	public void fundTransfer(long fromAccountNo, Payee payee, double amount, String transactionPassword)
-//			throws InsufficientBalanceException, InvalidCredentialsException, InternalServerException {
-//		Connection conn = null;
-//
-//		try {
-//			conn = JDBCUtil.getConnection();
-//
-//			PreparedStatement transactionAuthenticationStmt = conn
-//					.prepareStatement(BankingSystemDao.Queries.TRANSACTION_AUTHENTICATION_QUERY.getValue());
-//			transactionAuthenticationStmt.setLong(1, fromAccountNo);
-//			ResultSet transactionPasswordResultSet = transactionAuthenticationStmt.executeQuery();
-//			if (!transactionPasswordResultSet.next())
-//				throw new InvalidCredentialsException("Invalid Credentials!\nPlease enter valid credentials.");
-//			String transactionPasswordVerifier = transactionPasswordResultSet.getString(1);
-//			if (transactionPasswordVerifier != transactionPassword)
-//				throw new InvalidCredentialsException(
-//						"Invalid transaction password!\nPlease enter valid transaction password.");
-//
-//			PreparedStatement getDebitAccountBalanceStmt = conn
-//					.prepareStatement(BankingSystemDao.Queries.GET_ACCOUNT_BALANCE_QUERY.getValue());
-//			getDebitAccountBalanceStmt.setLong(1, fromAccountNo);
-//			ResultSet accountBalanceResultSet = getDebitAccountBalanceStmt.executeQuery();
-//			if (!accountBalanceResultSet.next())
-//				throw new InvalidCredentialsException("Invalid Credentials!\nPlease enter valid credentials.");
-//			double debitAcountBalance = accountBalanceResultSet.getDouble(1);
-//			if (amount < debitAcountBalance) {
-//				throw new InsufficientBalanceException("Balance not sufficient");
-//			} else {
-//				debitAcountBalance -= amount;
-//				PreparedStatement debitStmt = conn
-//						.prepareStatement(BankingSystemDao.Queries.DEBIT_ACCOUNT_BALANCE_QUERY.getValue());
-//				debitStmt.setDouble(1, debitAcountBalance);
-//				debitStmt.setLong(2, fromAccountNo);
-//				debitStmt.executeUpdate();
-//
-//				PreparedStatement getCreditAccountBalanceStmt = conn
-//						.prepareStatement(BankingSystemDao.Queries.GET_ACCOUNT_BALANCE_QUERY.getValue());
-//				getCreditAccountBalanceStmt.setLong(1, payee.getAccountNo());
-//				ResultSet payeeAccountBalanceresultSet = getCreditAccountBalanceStmt.executeQuery();
-//				if (!payeeAccountBalanceresultSet.next())
-//					throw new InvalidCredentialsException("Invalid Credentials!\nPlease enter valid credentials.");
-//				double payeeAccountBalance = payeeAccountBalanceresultSet.getDouble(1);
-//				payeeAccountBalance += amount;
-//				PreparedStatement creditStmt = conn
-//						.prepareStatement(BankingSystemDao.Queries.CREDIT_ACCOUNT_BALANCE_QUERY.getValue());
-//				creditStmt.setDouble(1, payeeAccountBalance);
-//				creditStmt.setLong(2, payee.getAccountNo());
-//				creditStmt.executeUpdate();
-//			}
-//
-//		} catch (SQLException e) {
-//			throw new InternalServerException(e.getMessage());
-//		} finally {
-//			try {
-//				if (conn != null)
-//					conn.close();
-//			} catch (SQLException e) {
-//				e.printStackTrace();
-//			}
-//		}
-//
-//	}
 
 }

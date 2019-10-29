@@ -16,6 +16,7 @@ import com.cg.BankingSystem.service.BankingSystemService;
 import com.cg.BankingSystem.service.CustomerService;
 import com.cg.BankingSystem.service.CustomerServiceImpl;
 
+//class to test the service layer of the system
 public class ServiceLayerTest {
 
 	@Ignore

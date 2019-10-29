@@ -1,7 +1,7 @@
 package com.cg.BankingSystem.dto;
 
 public class Account {
-	
+
 	private long accountNumber;
 	private AccountType accountType;
 	private String nickName;

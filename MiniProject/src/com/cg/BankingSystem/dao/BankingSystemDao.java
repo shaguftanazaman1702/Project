@@ -16,6 +16,7 @@ public interface BankingSystemDao<T> {
 	
 	boolean updatePassword(String newPassword, String userId) throws InternalServerException;
 	
+	//queries that will be executed to set data, get data, or serve customer requests
 	public static enum Queries {
 		GET_TRANSACTIONS_QUERY ("SELECT * FROM transactions WHERE account_id = ?"),
 		LOGIN_AUTHENTICATION_BA_QUERY ("SELECT user_id FROM user_table WHERE user_id = ? AND password = ?"),

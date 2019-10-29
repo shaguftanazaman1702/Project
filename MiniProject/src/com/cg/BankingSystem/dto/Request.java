@@ -2,6 +2,7 @@ package com.cg.BankingSystem.dto;
 
 import java.time.LocalDate;
 
+//to generate a request for cheque book or to change any personal detail
 public class Request {
 
 	private int requestNumber;

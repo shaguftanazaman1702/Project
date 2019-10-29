@@ -21,6 +21,7 @@ import com.cg.BankingSystem.exception.InvalidCredentialsException;
 import com.cg.BankingSystem.exception.NoTransactionsExistException;
 import com.cg.BankingSystem.exception.UserNotFoundException;
 
+//class that tests the strength with which the admin has been authorized
 public class AdminDaoTests {
 	
 	private AdminDao dao;
@@ -32,6 +33,7 @@ public class AdminDaoTests {
 	
 	@Ignore
 	@Test
+	//test method to check for authentication of a customer
 	public void testAuthentication() throws InvalidCredentialsException, InternalServerException {
 		LoginBean bean = new LoginBean();
 		bean.setUserId("AD123");
@@ -44,6 +46,7 @@ public class AdminDaoTests {
 	
 	@Ignore
 	@Test
+	//method to test the transaction operation
 	public void testTransactions() throws NoTransactionsExistException, InternalServerException {
 		List<Transaction> txns = dao.listTransactions(1010);
 		for (Transaction txn: txns)
@@ -52,12 +55,14 @@ public class AdminDaoTests {
 	
 	@Ignore
 	@Test
+	//method to test whether password gets updated or not
 	public void testUpdation() throws InternalServerException {
 		System.out.println(dao.updatePassword("HelloNew", "AD123"));
 	}
 	
 	@Ignore
 	@Test
+	//method to test the creation of a new account for a customer
 	public void testCreation() throws InternalServerException, AccountNotCreatedException {
 		SignUp newUser = new SignUp();
 		newUser.setName("Shubham");
@@ -76,12 +81,14 @@ public class AdminDaoTests {
 	
 	@Ignore
 	@Test
+	//method to test whether a certain customer exists or not
 	public void testFindCustomer() throws InternalServerException, UserNotFoundException {
 		System.out.println(dao.findCustomer("sh655"));
 	}
 	
 	@Ignore
 	@Test
+	//test method to save data of customer after making changes in his account
 	public void testSaveExistingUser() throws InternalServerException, UserNotFoundException {
 		Customer existingCustomer = dao.findCustomer("CC185");
 		

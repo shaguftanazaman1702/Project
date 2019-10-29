@@ -2,6 +2,7 @@ package com.cg.BankingSystem.dto;
 
 import java.time.LocalDate;
 
+//bean class for defining variables for storing transaction details
 public class Transaction {
 
 	private LocalDate transactionDate;

@@ -21,6 +21,7 @@ import com.cg.BankingSystem.exception.UserNotFoundException;
 
 public class AdminDaoImpl implements AdminDao {
 
+	// method to verify that the user has signed up previously and has an existing account
 	@Override
 	public Admin authenticateUser(LoginBean bean) throws InvalidCredentialsException, InternalServerException {
 		Connection conn = null;
@@ -40,6 +41,8 @@ public class AdminDaoImpl implements AdminDao {
 			
 			ResultSet adminDetails = fetchAdminStmt.executeQuery();
 			
+
+			// throw error if server faces a glitch
 			if (!adminDetails.next())
 				throw new InternalServerException("Server is facing issues, please try again later.");
 			
@@ -60,6 +63,8 @@ public class AdminDaoImpl implements AdminDao {
 		}
 	}
 
+
+	// to display the entire list of transactions for any customer
 	@Override
 	public List<Transaction> listTransactions(long accountNumber) throws NoTransactionsExistException, InternalServerException {
 		Connection conn = null;
@@ -85,6 +90,8 @@ public class AdminDaoImpl implements AdminDao {
 				transactions.add(transaction);
 			}
 			
+
+			// throw exception if no transactions have been performed yet
 			if (transactions.size() == 0)
 				throw new NoTransactionsExistException("No transactions found for user: " + accountNumber);
 			
@@ -101,6 +108,7 @@ public class AdminDaoImpl implements AdminDao {
 		}
 	}
 
+	// process request of customer to update the new password
 	@Override
 	public boolean updatePassword(String newPassword, String userId) throws InternalServerException {
 		Connection conn = null;
@@ -128,6 +136,9 @@ public class AdminDaoImpl implements AdminDao {
 		}
 	}
 
+
+
+	// method to create new account for a customer. Can be a new customer or an existing one having a second account
 	@Override
 	public long createNewAccount(SignUp newCustomer) throws AccountNotCreatedException, InternalServerException {
 		Connection conn = null;
@@ -156,6 +167,7 @@ public class AdminDaoImpl implements AdminDao {
 		}
 	}
 
+	// enter the data required for creation of a new account
 	private void insertIntoUser(Connection conn, PreparedStatement userInsertStmt, SignUp newCustomer, long accountNumber) throws AccountNotCreatedException, SQLException {
 		userInsertStmt.setString(1, newCustomer.getUserId());
 		userInsertStmt.setString(2, newCustomer.getPassword());
@@ -178,6 +190,7 @@ public class AdminDaoImpl implements AdminDao {
 		}
 	}
 
+	//  enter the data required for creation of a new account
 	private void insertIntoCustomer(Connection conn, PreparedStatement customerInsertStmt, SignUp newCustomer, long accountNumber) throws AccountNotCreatedException, SQLException {
 		customerInsertStmt.setLong(1, accountNumber);
 		customerInsertStmt.setString(2, newCustomer.getName());
@@ -229,6 +242,7 @@ public class AdminDaoImpl implements AdminDao {
 		return accountNumber.getLong(1);
 	}
 
+	// method to find details of a particular customer
 	@Override
 	public Customer findCustomer(String userId) throws InternalServerException, UserNotFoundException {
 		Connection conn = null;
@@ -282,6 +296,7 @@ public class AdminDaoImpl implements AdminDao {
 		}
 	}
 
+	// method to save all the details of an existing user
 	@Override
 	public boolean saveExistingUser(SignUp newCustomer) throws InternalServerException {
 		Connection conn = null;

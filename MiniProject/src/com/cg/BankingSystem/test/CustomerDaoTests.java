@@ -16,6 +16,7 @@ import com.cg.BankingSystem.dto.Transaction;
 import com.cg.BankingSystem.exception.InternalServerException;
 import com.cg.BankingSystem.exception.InvalidCredentialsException;
 
+//test class in which features of customer are being checked 
 public class CustomerDaoTests {
 
 	private CustomerDao dao;
@@ -27,6 +28,7 @@ public class CustomerDaoTests {
 	
 	@Ignore
 	@Test
+	//test whether he is a valid customer
 	public void testAuthentication() throws InvalidCredentialsException, InternalServerException {
 		LoginBean bean = new LoginBean();
 		bean.setUserId("CC234");
@@ -38,18 +40,21 @@ public class CustomerDaoTests {
 	
 	@Ignore
 	@Test
+	//test method to change the contact number
 	public void testContactChange() throws InternalServerException {
 		System.out.println(dao.changeContactNumber("+914445558881", 1016L));
 	}
 	
 	@Ignore
 	@Test
+	//test method to change the address for communication
 	public void testAddressChange() throws InternalServerException {
 		System.out.println(dao.changeAddress("Guwahati", 1016L));
 	}
 	
 	@Ignore
 	@Test
+	//test method to add a new payee
 	public void addNewBeneficiary() throws InternalServerException {
 		Account newBeneficiary = new Account();
 		newBeneficiary.setAccountNumber(1021L);
@@ -60,6 +65,7 @@ public class CustomerDaoTests {
 	
 	@Ignore
 	@Test
+	//test method to list down all the payees added to the account of the customer
 	public void testFetchBeneficiaries() throws InternalServerException {
 		List<Account> beneficiaries = dao.fetchBeneficiaries(1019L);
 		for (Account beneficiary: beneficiaries)
@@ -68,6 +74,7 @@ public class CustomerDaoTests {
 	
 	@Ignore
 	@Test
+	//test method to check if fund transfer is taking place with proper validations
 	public void testFundTransfer() throws InternalServerException, InvalidCredentialsException {
 		LoginBean bean = new LoginBean();
 		bean.setUserId("CC234");

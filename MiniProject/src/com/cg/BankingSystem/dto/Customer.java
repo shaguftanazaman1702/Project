@@ -2,6 +2,7 @@ package com.cg.BankingSystem.dto;
 
 import java.util.List;
 
+//variables defined for a customer
 public class Customer {
 
 	private String userId;

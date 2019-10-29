@@ -73,7 +73,7 @@ public class BankingSystemCli {
 				int userTypeChoice = scanner.nextInt();
 				switch (userTypeChoice) {
 				case 1:
-					signIn();
+					signIn();//if valid credentials are given, go into the customer's bank account
 					break;
 				case 0:
 					System.out.println("SERVICE TERMINATED");
@@ -88,6 +88,7 @@ public class BankingSystemCli {
 		//Validation done
 	}
 
+	//method for a customer to login to his account. If valid credentials are not given, throw appropriate error messages
 	private static void signIn() throws InvalidCredentialsException, InternalServerException,
 	AccountNotCreatedException, NoTransactionsExistException, RequestCannotBeProcessedException,
 	NoServicesMadeException, UserNotFoundException, AccountsNotFoundException {
@@ -113,6 +114,7 @@ public class BankingSystemCli {
 			isValidPassword = BankingSystemService.validatePassword(password);
 		}
 
+		//to distinguish that the person signing in is an admin, thus calling the AdminService class
 		if (login.getUserId().contains("AD")) {
 			AdminService adminService = (AdminService) BankingSystemService.getInstance(login);
 
@@ -121,7 +123,9 @@ public class BankingSystemCli {
 			System.out.println("Logged in successfully as Admin. Welcome " + adminLogin.getUserName());
 
 			onAdminLogin(adminService);
-		} else {
+		} 
+		//to recognize that the person signing in is a customer, hence calling the CustomerService class
+		else {
 			CustomerService customerService = (CustomerService) BankingSystemService.getInstance(login);
 			System.out.println(customerService == null);
 			Customer customerLogin = (Customer) customerService.authenticateUser(login);
@@ -143,6 +147,7 @@ public class BankingSystemCli {
 	 * @throws UserNotFoundException
 	 */
 
+	//method that defines the functions of an admin. Only when an admin signs in, can he see these functions.
 	public static void onAdminLogin(AdminService service) throws AccountNotCreatedException, InternalServerException,
 	NoTransactionsExistException, UserNotFoundException {
 		while (true) {
@@ -157,10 +162,10 @@ public class BankingSystemCli {
 				choice = scanner.nextInt();
 				switch (choice) {
 				case 1:
-					createNewAccount(service);
+					createNewAccount(service);//method to create a new account for a customer
 					break;
 				case 2:
-					viewTransactions(service);
+					viewTransactions(service);//method to view transactions of various customers by entering their account number
 					break;
 				case 0:
 					System.exit(0); // Exiting the control when 0 is entered.
@@ -176,6 +181,7 @@ public class BankingSystemCli {
 		// Validation done
 	}
 
+	//method wherein the admin creates a new account 
 	private static void createNewAccount(AdminService service)
 			throws AccountNotCreatedException, InternalServerException, UserNotFoundException {
 		boolean backFlag = false;
@@ -209,6 +215,7 @@ public class BankingSystemCli {
 		// Validation done
 	}
 
+	//method for creating a new account for a customer who already has one account
 	private static void createNewAccountForExistingUser(AdminService service)
 			throws InternalServerException, UserNotFoundException {
 		while (true) {
@@ -242,6 +249,7 @@ public class BankingSystemCli {
 
 				SignUp newCustomer = new SignUp();
 
+				//fill in the details of the customer in the new account of his that is being created here
 				newCustomer.setUserId(existingCustomer.getUserId());
 				newCustomer.setPassword(existingCustomer.getPassword());
 				newCustomer.setName(existingCustomer.getName());
@@ -253,6 +261,7 @@ public class BankingSystemCli {
 				newCustomer.setOpeningBal(openingBal);
 				newCustomer.setPanCardNumber(existingCustomer.getPanCardNumber());
 
+				//a customer can have just one savings and one current account.
 				if (existingCustomer.getAccountType() == AccountType.SAVINGS_ACCOUNT)
 					newCustomer.setAccountType(AccountType.CURRENT_ACCOUNT);
 				else
@@ -272,6 +281,7 @@ public class BankingSystemCli {
 		// Validation done
 	}
 
+	//create an account for a completely new customer
 	private static void createNewUserAccount(AdminService service) throws AccountNotCreatedException, InternalServerException {
 		try {
 			SignUp newSignUp = new SignUp();
@@ -292,6 +302,7 @@ public class BankingSystemCli {
 			boolean isValidPassword = false;
 			boolean isValidTxnPwd = false;
 
+			//validate all the data that is being entered into the creation of account
 			while (!isValidName) {
 				System.out.print("Enter customer name : ");
 				name = scanner.next();
@@ -385,6 +396,7 @@ public class BankingSystemCli {
 			newSignUp.setPassword(password);
 			newSignUp.setTransactionPassword(transactionPassword);
 
+			//generate an account number if all the data entered is valid  
 			long newCustomerAccountNo = service.createNewAccount(newSignUp);
 
 			System.out.println("New Account opened successfully with account number: " + newCustomerAccountNo);
@@ -395,6 +407,7 @@ public class BankingSystemCli {
 		//Validation done
 	}
 
+	//method where admin can view all the transactions of an customer by entering a particular account number
 	private static void viewTransactions(AdminService service)
 			throws NoTransactionsExistException, InternalServerException {
 		while (true) {
@@ -409,6 +422,7 @@ public class BankingSystemCli {
 
 				boolean validatedEntry = service.validateLongEntry(min, max, accountNumber);
 
+				//check whether the account number provided is a valid one
 				if (!validatedEntry) {
 					System.out.println("Please enter a valid input");
 					continue;
@@ -443,6 +457,7 @@ public class BankingSystemCli {
 	 * @throws AccountsNotFoundException
 	 */
 
+	//functions if a customer signs in to his account
 	public static void onCustomerLogin(Customer customer, CustomerService service)
 			throws NoTransactionsExistException, InternalServerException, RequestCannotBeProcessedException,
 			NoServicesMadeException, AccountsNotFoundException {
@@ -460,6 +475,7 @@ public class BankingSystemCli {
 				System.out.println("***********************************************");
 
 				int customerChoice = scanner.nextInt();
+				//methods defined for operation selection according to customer's choice
 				switch (customerChoice) {
 				case 1:
 					viewStatement(customer, service);
@@ -495,6 +511,7 @@ public class BankingSystemCli {
 		// Validation done
 	}
 
+	//method to view statement. Might be mini-statement or detailed one
 	private static void viewStatement(Customer customer, CustomerService service)
 			throws NoTransactionsExistException, InternalServerException {
 		
@@ -526,6 +543,7 @@ public class BankingSystemCli {
 		// Validation done
 	}
 
+	//method to view mini-statement
 	private static void viewMiniStatement(Customer customer, CustomerService service)
 			throws NoTransactionsExistException, InternalServerException {
 		if (customer.getTransactions() == null) {
@@ -566,6 +584,7 @@ public class BankingSystemCli {
 		// Validation done
 	}
 
+	//method to view detailed statement
 	private static void viewDetailedStatement(Customer customer, CustomerService service)
 			throws NoTransactionsExistException, InternalServerException {
 		if (customer.getTransactions() == null) {
@@ -606,6 +625,7 @@ public class BankingSystemCli {
 		// Validation done
 	}
 
+	//method to modify the details entered while creation of customer's account 
 	private static void changeDetails(Customer customer, CustomerService service) throws InternalServerException {
 		System.out.println("MODIFYING EXISTING CUSTOMER DETAILS");
 		System.out.println(customer);
@@ -665,6 +685,7 @@ public class BankingSystemCli {
 		// Validations done
 	}
 
+	//method in which customer generates a request for cheque book 
 	private static void requestChequeBook(Customer customer, CustomerService service)
 			throws RequestCannotBeProcessedException, InternalServerException {
 		boolean backFlag = false;
@@ -697,6 +718,7 @@ public class BankingSystemCli {
 		// Validations done
 	}
 
+	//method to track the progress of the service requested for
 	private static void trackService(Customer customer, CustomerService service)
 			throws NoServicesMadeException, InternalServerException {
 		if (customer.getRequests() == null) {
@@ -766,6 +788,7 @@ public class BankingSystemCli {
 		// Validations done
 	}
 
+	//method to transfer funds across accounts. May or may not be of the same bank
 	private static void transferAccrossAccounts(Customer customer, CustomerService service)
 			throws InternalServerException, AccountsNotFoundException {
 		Account otherAccount = service.fetchOtherExistingAccount(customer.getAccountNumber(),
@@ -820,6 +843,7 @@ public class BankingSystemCli {
 		// Validations done
 	}
 
+	//method to transfer funds across people already added as payees
 	private static void transferAcrossUsers(Customer customer, CustomerService service) throws InternalServerException {
 		List<Account> beneficiaries = service.fetchBeneficiaries(customer.getAccountNumber());
 
@@ -859,6 +883,7 @@ public class BankingSystemCli {
 				newBeneficiary.setAccountNumber(accountNumber);
 				newBeneficiary.setNickName(nickName);
 
+				//to add a new payee to the list of already existing payees
 				boolean isAdded = service.addNewBeneficiary(customer.getAccountNumber(), newBeneficiary);
 				if (isAdded) {
 					System.out.println("Beneficiary added.");
@@ -885,6 +910,7 @@ public class BankingSystemCli {
 
 				double limit = service.getTransactionLimit();
 
+				//validate these fields. Only if all of these are true, can a transaction be processed
 				boolean isValidTxnLimit = transferAmount <= limit;
 				boolean isValidTxnAmt = service.validateTransactionAmount(customer, transferAmount);
 				boolean isValidPwd = service.checkTransactionPassword(customer, txnPwd);
@@ -918,6 +944,7 @@ public class BankingSystemCli {
 		}
 	}
 
+	//method to change the password of customer's account
 	private static void changePassword(Customer customer, CustomerService service) throws InternalServerException {
 		while (true) {
 			System.out.println("Please enter old password: ");
@@ -956,6 +983,7 @@ public class BankingSystemCli {
 		}
 	}
 
+	//view one's profile 
 	private static void viewProfile(Customer customer, CustomerService service) {
 		System.out.println(customer);
 	}

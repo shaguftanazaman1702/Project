@@ -1,7 +1,8 @@
 package com.cg.BankingSystem.dto;
 
+//class to define userId and password for admin and generate equivalent getter and setter methods
 public class Admin {
-
+	
 	private String userId;
 	private String userName;
 	

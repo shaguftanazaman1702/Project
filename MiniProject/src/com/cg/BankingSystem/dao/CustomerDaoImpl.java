@@ -24,6 +24,7 @@ import com.cg.BankingSystem.exception.RequestCannotBeProcessedException;
 
 public class CustomerDaoImpl implements CustomerDao {
 
+	// method to authenticate customer to check if valid credentials is given
 	@Override
 	public Customer authenticateUser(LoginBean bean) throws InternalServerException, InvalidCredentialsException {
 		Connection conn = null;
@@ -56,6 +57,7 @@ public class CustomerDaoImpl implements CustomerDao {
 			
 			Customer fetchedCustomer = new Customer();
 			
+			//Once customer has created an account and logged into it, then set other required fields
 			fetchedCustomer.setAccountNumber(accountDetails.getLong(1));
 			fetchedCustomer.setAccountType(DatabaseUtilities.getAccountType(accountDetails.getString(2)));
 			fetchedCustomer.setBalance(accountDetails.getDouble(3));
@@ -81,6 +83,7 @@ public class CustomerDaoImpl implements CustomerDao {
 		}
 	}
 
+	//method to list all the transactions of the customer when he logs into his account
 	@Override
 	public List<Transaction> listTransactions(long accountNumber) throws NoTransactionsExistException, InternalServerException {
 		Connection conn = null;
@@ -94,6 +97,7 @@ public class CustomerDaoImpl implements CustomerDao {
 			
 			List<Transaction> transactions = new ArrayList<Transaction>();
 			
+			//transaction details that customer must be able to see
 			while (txnsFetched.next()) {
 				Transaction transaction = new Transaction();
 				transaction.setTransactionID(txnsFetched.getInt(1));
@@ -106,6 +110,7 @@ public class CustomerDaoImpl implements CustomerDao {
 				transactions.add(transaction);
 			}
 			
+			//throw an error if no transaction has been performed yet
 			if (transactions.size() == 0)
 				throw new NoTransactionsExistException("No transactions found for user: " + accountNumber);
 			
@@ -122,6 +127,7 @@ public class CustomerDaoImpl implements CustomerDao {
 		}
 	}
 
+	// method where a customer requests to change his password
 	@Override
 	public boolean updatePassword(String newPassword, String userId) throws InternalServerException {
 Connection conn = null;
@@ -149,6 +155,7 @@ Connection conn = null;
 		}
 	}
 
+	// method where a customer requests for changing his contact number after being logged in
 	@Override
 	public boolean changeContactNumber(String newNumber, long accountNumber) throws InternalServerException {
 		Connection conn = null;
@@ -174,6 +181,7 @@ Connection conn = null;
 		}
 	}
 
+	// method where customer requests for a change in address details
 	@Override
 	public boolean changeAddress(String newAddress, long accountNumber) throws InternalServerException {
 		Connection conn = null;
@@ -199,6 +207,7 @@ Connection conn = null;
 		}
 	}
 
+	// method to request for a new cheque book
 	@Override
 	public int requestForCheckBook(Request request) throws RequestCannotBeProcessedException, InternalServerException {
 		Connection conn = null;
@@ -232,6 +241,7 @@ Connection conn = null;
 		}
 	}
 
+	//method wherein a customer can see all the requests he has placed to the bank
 	@Override
 	public List<Request> getRequests(long accountNumber) throws NoServicesMadeException, InternalServerException {
 		Connection conn = null;
@@ -271,6 +281,7 @@ Connection conn = null;
 		}
 	}
 
+	//method to fetch different account details. Valid only for customers who have multiple accounts in the same bank
 	@Override
 	public Account fetchOtherExistingAccount(long accountNumber, AccountType accountType) throws AccountsNotFoundException, InternalServerException {
 		Connection conn = null;
@@ -311,6 +322,7 @@ Connection conn = null;
 		}
 	}
 
+	// method to view the list of payees a customer his linked to his account
 	@Override
 	public List<Account> fetchBeneficiaries(long accountNumber) throws InternalServerException {
 		Connection conn = null;
@@ -343,6 +355,7 @@ Connection conn = null;
 		}
 	}
 
+	// method to process a fund transfer from the customer's account to another account. Make valid changes to all the affected tables
 	@Override
 	public boolean transferFund(Customer fromAccount, Account otherAccount, Transaction txnDetails) throws InternalServerException {
 		Connection conn = null;
@@ -363,6 +376,7 @@ Connection conn = null;
 			if (!balanceDetails.next())
 				throw new InternalServerException("Server Error, please try again later.");
 			
+			//to make changes in the bank accounts of both the parties.
 			double toBalance = balanceDetails.getDouble(1);
 			double fromBalance = fromAccount.getBalance();
 			
@@ -434,6 +448,7 @@ Connection conn = null;
 		}
 	}
 
+	//method for a customer to add a new payee to the list of payees already present
 	@Override
 	public boolean addNewBeneficiary(long accountNumber, Account newBeneficiary) throws InternalServerException {
 		Connection conn = null;

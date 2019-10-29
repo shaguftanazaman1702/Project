@@ -40,11 +40,12 @@ public class CustomerDaoImpl implements CustomerDao {
 				throw new InvalidCredentialsException("Invalid Credentials!\nPlease enter valid credentials.");
 			
 			PreparedStatement fetchCustomerStmt = conn.prepareStatement(BankingSystemDao.Queries.GET_CUSTOMER_DETAILS_QUERY.getValue());
-			PreparedStatement fetchAccountStmt = conn.prepareStatement(BankingSystemDao.Queries.GET_ACCOUNT_DETAILS_QUERY.getValue());
+			PreparedStatement fetchAccountStmt = conn.prepareStatement(BankingSystemDao.Queries.GET_ACCOUNT_DETAILS_CC_QUERY.getValue());
 			PreparedStatement fetchTxnPwdStmt = conn.prepareStatement(BankingSystemDao.Queries.GET_TXN_PWD_QUERY.getValue());
 			
 			fetchCustomerStmt.setLong(1, credCheckResult.getLong(1));
 			fetchAccountStmt.setLong(1, credCheckResult.getLong(1));
+			fetchAccountStmt.setString(2, bean.getAccountType().getValue());
 			fetchTxnPwdStmt.setLong(1, credCheckResult.getLong(1));
 			
 			ResultSet customerDetails = fetchCustomerStmt.executeQuery();
@@ -205,9 +206,9 @@ Connection conn = null;
 		try {
 			conn = JDBCUtil.getConnection();
 			PreparedStatement stmt = conn.prepareStatement(Queries.CHEQUE_BOOK_SERVICE_QUERY.getValue());
-			stmt.setInt(1, request.getStatus());
-			stmt.setLong(2, request.getAccountNumber());
-			stmt.setDate(3, DatabaseUtilities.getSQLDate(request.getRequestDate()));
+			stmt.setLong(1, request.getAccountNumber());
+			stmt.setDate(2, DatabaseUtilities.getSQLDate(request.getRequestDate()));
+			stmt.setInt(3, request.getStatus());
 
 			int rowsAffected = stmt.executeUpdate();
 			if (rowsAffected == 0)
@@ -245,7 +246,11 @@ Connection conn = null;
 			ResultSet requestResults = requestStmt.executeQuery();
 			
 			List<Request> requests = new ArrayList<Request>();
-			while (requestResults.next()) {
+			int counter = 0;
+			
+			while (requestResults.next() && counter < 20) {
+				if (! (DatabaseUtilities.getDuration(DatabaseUtilities.getLocalDate(requestResults.getDate(3)), LocalDate.now()) < 180L)) 
+					continue;
 				Request request = new Request();
 				request.setRequestNumber(requestResults.getInt(1));
 				request.setAccountNumber(requestResults.getLong(2));
@@ -253,6 +258,7 @@ Connection conn = null;
 				request.setStatus(requestResults.getInt(4));
 				
 				requests.add(request);
+				counter ++;
 			}
 			
 			if (requests.size() == 0)
@@ -368,9 +374,11 @@ Connection conn = null;
 			
 			debitStmt.setDouble(1, fromBalance - txnDetails.getTransactionAmount());
 			debitStmt.setLong(2, fromAccount.getAccountNumber());
+			debitStmt.setString(3, fromAccount.getAccountType().getValue());
 			
 			creditStmt.setDouble(1, toBalance + txnDetails.getTransactionAmount());
 			creditStmt.setLong(2, otherAccount.getAccountNumber());
+			creditStmt.setString(3, AccountType.SAVINGS_ACCOUNT.getValue());
 			
 			int debitRowsAffected = debitStmt.executeUpdate();
 			
@@ -384,7 +392,7 @@ Connection conn = null;
 			debitTxnStmt.setDate(2, DatabaseUtilities.getSQLDate(LocalDate.now()));
 			debitTxnStmt.setString(3, TransactionType.DEBIT.getValue());
 			debitTxnStmt.setDouble(4, txnDetails.getTransactionAmount());
-			debitTxnStmt.setLong(5, fromAccount.getAccountNumber());
+			debitTxnStmt.setLong(5, otherAccount.getAccountNumber());
 			
 			int creditRowsAffected = creditStmt.executeUpdate();
 			
@@ -416,7 +424,7 @@ Connection conn = null;
 			creditTxnStmt.setDate(2, DatabaseUtilities.getSQLDate(LocalDate.now()));
 			creditTxnStmt.setString(3, TransactionType.CREDIT.getValue());
 			creditTxnStmt.setDouble(4, txnDetails.getTransactionAmount());
-			creditTxnStmt.setLong(5, otherAccount.getAccountNumber());
+			creditTxnStmt.setLong(5, fromAccount.getAccountNumber());
 			
 			creditTxnStmt.executeUpdate();
 			debitTxnStmt.executeUpdate();

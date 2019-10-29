@@ -49,9 +49,13 @@ public class Transaction {
 	}
 	@Override
 	public String toString() {
-		return "Transaction [transactionDate=" + transactionDate + ", transactionAmount=" + transactionAmount
-				+ ", transactionType=" + transactionType + ", transactionID=" + transactionID + ", accountNo="
-				+ accountNo + ", transactionDescription=" + transactionDescription + "]";
+		String printValue = "Transaction ID: " + transactionID + "\n" +
+							"Transaction Amount: " + transactionAmount + "\n" + 
+							"Transaction Date: " + transactionDate + "\n" + 
+							"Transaction Type: " + transactionType + "\n" +
+							"Account Number: " + accountNo + "\n" +
+							"Transaction Description: " + transactionDescription;
+		return printValue;
 	}
 	
 }

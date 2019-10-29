@@ -16,6 +16,7 @@ import com.cg.BankingSystem.dto.Transaction;
 import com.cg.BankingSystem.exception.AccountNotCreatedException;
 import com.cg.BankingSystem.exception.InternalServerException;
 import com.cg.BankingSystem.exception.InvalidCredentialsException;
+import com.cg.BankingSystem.exception.MaxAccountsDefinedForUserException;
 import com.cg.BankingSystem.exception.NoTransactionsExistException;
 import com.cg.BankingSystem.exception.UserNotFoundException;
 
@@ -237,7 +238,7 @@ public class AdminDaoImpl implements AdminDao {
 			conn = JDBCUtil.getConnection();
 			PreparedStatement findUserStmt = conn.prepareStatement(BankingSystemDao.Queries.GET_USER_DETAILS_QUERY.getValue());
 			PreparedStatement findCustomerStmt = conn.prepareStatement(BankingSystemDao.Queries.GET_CUSTOMER_DETAILS_QUERY.getValue());
-			PreparedStatement findAccountStmt = conn.prepareStatement(BankingSystemDao.Queries.GET_ACCOUNT_DETAILS_QUERY.getValue());
+			PreparedStatement findAccountStmt = conn.prepareStatement(BankingSystemDao.Queries.GET_ACCOUNT_DETAILS_AD_QUERY.getValue());
 			
 			findUserStmt.setString(1, userId);
 			
@@ -283,7 +284,7 @@ public class AdminDaoImpl implements AdminDao {
 	}
 
 	@Override
-	public boolean saveExistingUser(SignUp newCustomer) throws InternalServerException {
+	public boolean saveExistingUser(SignUp newCustomer) throws MaxAccountsDefinedForUserException {
 		Connection conn = null;
 		
 		try {
@@ -301,7 +302,7 @@ public class AdminDaoImpl implements AdminDao {
 				return false;
 			return true;
 		} catch (SQLException e) {
-			throw new InternalServerException(e.getMessage());
+			throw new MaxAccountsDefinedForUserException("User already has Savings and Current account in the Bank.");
 		} finally {
 			try {
 				if (conn != null)

@@ -98,8 +98,17 @@ public class Customer {
 	}
 	@Override
 	public String toString() {
-		return "Customer [userId=" + userId + ", accountNumber=" + accountNumber + ", name=" + name + ", address="
-				+ address + ", mobileNumber=" + mobileNumber + ", emailId=" + emailId + ", panCardNumber="
-				+ panCardNumber + ", accountType=" + accountType + ", balance=" + balance + "]";
+		
+		String printValue = "User ID: " + userId + "\n" +
+							"Account Number: " + accountNumber + "\n" +
+							"Name: " + name + "\n" + 
+							"Address: " + address + "\n" + 
+							"Mobile Number: " + mobileNumber + "\n" + 
+							"Email ID: " + emailId + "\n" +
+							"PAN Number: " + panCardNumber + "\n" + 
+							"Account Type: " + accountType.getValue() + "\n" +
+							"Account Balance: " + balance;
+		
+		return printValue;
 	}
 }

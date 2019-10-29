@@ -1,5 +1,6 @@
 package com.cg.BankingSystem.service;
 
+import com.cg.BankingSystem.exception.MaxAccountsDefinedForUserException;
 import com.cg.BankingSystem.dto.Customer;
 import com.cg.BankingSystem.dto.SignUp;
 import com.cg.BankingSystem.exception.AccountNotCreatedException;
@@ -12,6 +13,6 @@ public interface AdminService extends BankingSystemService {
 
 	Customer findCustomer(String userId) throws InternalServerException, UserNotFoundException;
 
-	boolean saveExistingUser(SignUp newCustomer) throws InternalServerException;
+	boolean saveExistingUser(SignUp newCustomer) throws MaxAccountsDefinedForUserException;
 
 }

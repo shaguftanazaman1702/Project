@@ -1,5 +1,8 @@
 package com.cg.BankingSystem.test;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 
 import org.junit.After;
@@ -9,12 +12,16 @@ import org.junit.Test;
 
 import com.cg.BankingSystem.dao.CustomerDao;
 import com.cg.BankingSystem.dao.CustomerDaoImpl;
+import com.cg.BankingSystem.dao.DatabaseUtilities;
 import com.cg.BankingSystem.dto.Account;
 import com.cg.BankingSystem.dto.Customer;
 import com.cg.BankingSystem.dto.LoginBean;
+import com.cg.BankingSystem.dto.Request;
 import com.cg.BankingSystem.dto.Transaction;
 import com.cg.BankingSystem.exception.InternalServerException;
 import com.cg.BankingSystem.exception.InvalidCredentialsException;
+import com.cg.BankingSystem.exception.NoServicesMadeException;
+import com.cg.BankingSystem.exception.RequestCannotBeProcessedException;
 
 public class CustomerDaoTests {
 
@@ -61,7 +68,7 @@ public class CustomerDaoTests {
 	@Ignore
 	@Test
 	public void testFetchBeneficiaries() throws InternalServerException {
-		List<Account> beneficiaries = dao.fetchBeneficiaries(1019L);
+		List<Account> beneficiaries = dao.fetchBeneficiaries(1022L);
 		for (Account beneficiary: beneficiaries)
 			System.out.println(beneficiary.getNickName());
 	}
@@ -85,6 +92,24 @@ public class CustomerDaoTests {
 	}
 	
 	@Ignore
+	@Test
+	public void testServiceRequest() throws RequestCannotBeProcessedException, InternalServerException {
+		Request newRequest = new Request();
+		newRequest.setAccountNumber(1022L);
+		newRequest.setRequestDate(LocalDate.now());
+		newRequest.setStatus(0);
+		System.out.println(dao.requestForCheckBook(newRequest));
+	}
+	
+	@Ignore
+	@Test
+	public void testServiceTracking() throws NoServicesMadeException, InternalServerException {
+		List<Request> requests = dao.getRequests(1022L);
+		
+		for (Request request: requests)
+			System.out.println(request);
+	}
+	
 	@After
 	public void tearDown() {
 		dao = null;

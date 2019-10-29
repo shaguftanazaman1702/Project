@@ -2,6 +2,7 @@ package com.cg.BankingSystem.service;
 
 import com.cg.BankingSystem.dao.AdminDao;
 import com.cg.BankingSystem.dao.AdminDaoImpl;
+import com.cg.BankingSystem.exception.MaxAccountsDefinedForUserException;
 import com.cg.BankingSystem.dto.Customer;
 import com.cg.BankingSystem.dto.SignUp;
 import com.cg.BankingSystem.exception.AccountNotCreatedException;
@@ -28,7 +29,7 @@ public class AdminServiceImpl extends BankingSystemServiceImpl implements AdminS
 	}
 
 	@Override
-	public boolean saveExistingUser(SignUp newCustomer) throws InternalServerException {
+	public boolean saveExistingUser(SignUp newCustomer) throws MaxAccountsDefinedForUserException {
 		return dao.saveExistingUser(newCustomer);
 	}
 

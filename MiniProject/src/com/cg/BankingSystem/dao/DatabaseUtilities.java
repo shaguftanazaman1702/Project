@@ -1,8 +1,10 @@
 package com.cg.BankingSystem.dao;
 
 import java.sql.Date;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 
 import com.cg.BankingSystem.dto.AccountType;
 import com.cg.BankingSystem.dto.TransactionType;
@@ -27,6 +29,11 @@ public class DatabaseUtilities {
 		if (rawType.equals("SAV"))
 			return AccountType.SAVINGS_ACCOUNT;
 		return AccountType.CURRENT_ACCOUNT;
+	}
+	
+	public static long getDuration(LocalDate before, LocalDate after) {
+		Duration duration = Duration.between(before.atStartOfDay(), after.atStartOfDay());
+		return duration.toDays();
 	}
 
 }

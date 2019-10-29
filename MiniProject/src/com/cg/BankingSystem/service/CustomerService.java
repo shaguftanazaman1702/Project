@@ -35,4 +35,5 @@ public interface CustomerService extends BankingSystemService {
 	boolean transferFund(Customer fromAccount, Account otherAccount, Transaction txnDetails) throws InternalServerException;
 
 	boolean addNewBeneficiary(long accountNumber, Account newBeneficiary) throws InternalServerException;
+
 }

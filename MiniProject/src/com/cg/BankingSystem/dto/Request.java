@@ -1,6 +1,7 @@
 package com.cg.BankingSystem.dto;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 
 public class Request {
 
@@ -8,6 +9,14 @@ public class Request {
 	private int status;
 	private long accountNumber;
 	private LocalDate requestDate;
+	
+	private HashMap<Integer, String> requestStatusMapper = new HashMap<Integer, String>();
+	
+	{
+		requestStatusMapper.put(0, "REQUEST_PLACED");
+		requestStatusMapper.put(1, "IN_PROGRESS");
+		requestStatusMapper.put(2, "REQUEST_PROCESSED");
+	}
 	
 	public int getRequestNumber() {
 		return requestNumber;
@@ -32,6 +41,14 @@ public class Request {
 	}
 	public void setRequestDate(LocalDate requestDate) {
 		this.requestDate = requestDate;
+	}
+	
+	@Override
+	public String toString() {
+		String printValue = "Service ID: " + requestNumber + "\n" +
+							"Service Status: " + requestStatusMapper.get(status) + "\n" +
+							"Request Placed On: " + requestDate; 
+		return printValue;
 	}
 	
 }

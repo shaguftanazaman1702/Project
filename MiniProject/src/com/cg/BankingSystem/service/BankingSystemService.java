@@ -20,8 +20,6 @@ public interface BankingSystemService {
 	
 	boolean validateLongEntry(long min, long max, long input);
 	
-	boolean validateAlphaNumeric(String input);
-	
 	boolean validateDouble(double min, double max, double input);
 	
 	boolean validateName(String name);
@@ -35,6 +33,8 @@ public interface BankingSystemService {
 	boolean validatePanCard(String panCardNumber);
 
 	boolean validateTxnPwd(String transactionPassword);
+
+	boolean validateNickName(String nickName);
 	
 	static BankingSystemService getInstance(LoginBean bean) {
 		if (bean.getUserId().contains("AD"))
@@ -57,10 +57,14 @@ public interface BankingSystemService {
 	}
 	
 	String NUMBER_VALIDATOR = "[0-9]+";
-	String DOUBLE_VALIDATOR = "[0-9]+.[0-9]+";
+	String DOUBLE_VALIDATOR = "[0-9.]+";
 	String ADMIN_USER_ID_VALIDATOR = "AD[A-Za-z0-9]+";
 	String CUSTOMER_USER_ID_VALIDATOR = "CC[A-Za-z0-9]+";
-	String NAME_VALIDATOR = "[A-Z][A_Za-z ]+";
-	String PASSWORD_VALIDATOR = "[A-Za-z0-9@_!$]{8,15}";
+	String NAME_VALIDATOR = "[A-Z][A-Za-z ]+";
+	String PASSWORD_VALIDATOR = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20})";
+	String ADDRESS_VALIDATOR = "[A-Z a-z0-9,-.]+";
+	String MOBILE_NUMBER_VALIDATOR = "\\+91[6-9][0-9]{9}";
+	String EMAIL_VALIDATOR = "[\\w_]+@[a-z]{3,20}.[a-z]{2,4}";
+	String PAN_CARD_VALIDATOR = "[A-Z]{5}[0-9]{4}[A-Z]";
 
 }

@@ -18,6 +18,7 @@ import com.cg.BankingSystem.dto.Transaction;
 import com.cg.BankingSystem.exception.AccountNotCreatedException;
 import com.cg.BankingSystem.exception.InternalServerException;
 import com.cg.BankingSystem.exception.InvalidCredentialsException;
+import com.cg.BankingSystem.exception.MaxAccountsDefinedForUserException;
 import com.cg.BankingSystem.exception.NoTransactionsExistException;
 import com.cg.BankingSystem.exception.UserNotFoundException;
 
@@ -74,15 +75,15 @@ public class AdminDaoTests {
 		System.out.println(dao.createNewAccount(newUser));
 	}
 	
-	@Ignore
+//	@Ignore
 	@Test
 	public void testFindCustomer() throws InternalServerException, UserNotFoundException {
-		System.out.println(dao.findCustomer("sh655"));
+		System.out.println(dao.findCustomer("CC123"));
 	}
 	
 	@Ignore
 	@Test
-	public void testSaveExistingUser() throws InternalServerException, UserNotFoundException {
+	public void testSaveExistingUser() throws UserNotFoundException, MaxAccountsDefinedForUserException, InternalServerException {
 		Customer existingCustomer = dao.findCustomer("CC185");
 		
 		double openingBal = 10000;

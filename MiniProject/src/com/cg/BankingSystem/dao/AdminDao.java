@@ -5,6 +5,7 @@ import com.cg.BankingSystem.dto.Customer;
 import com.cg.BankingSystem.dto.SignUp;
 import com.cg.BankingSystem.exception.AccountNotCreatedException;
 import com.cg.BankingSystem.exception.InternalServerException;
+import com.cg.BankingSystem.exception.MaxAccountsDefinedForUserException;
 import com.cg.BankingSystem.exception.UserNotFoundException;
 
 public interface AdminDao extends BankingSystemDao<Admin> {
@@ -13,5 +14,5 @@ public interface AdminDao extends BankingSystemDao<Admin> {
 	
 		Customer findCustomer(String userId) throws InternalServerException, UserNotFoundException;
 
-		boolean saveExistingUser(SignUp newCustomer) throws InternalServerException;
+		boolean saveExistingUser(SignUp newCustomer) throws MaxAccountsDefinedForUserException;
 }

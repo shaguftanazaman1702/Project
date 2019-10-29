@@ -43,12 +43,42 @@ public class BankingSystemServiceImpl implements BankingSystemService {
 	public boolean validateDouble(double min, double max, double input) {
 		boolean isValidNumber = String.valueOf(input).matches(DOUBLE_VALIDATOR);
 		boolean isValidRange = input >= min && input <= max;
-		return false;
+		return isValidNumber && isValidRange;
 	}
 
 	@Override
 	public boolean validateName(String name) {
 		return name.matches(NAME_VALIDATOR);
+	}
+
+	@Override
+	public boolean validateAddress(String address) {
+		return address.matches(ADDRESS_VALIDATOR);
+	}
+
+	@Override
+	public boolean validateContact(String mobileNo) {
+		return mobileNo.matches(MOBILE_NUMBER_VALIDATOR);
+	}
+
+	@Override
+	public boolean validateEmail(String email) {
+		return email.matches(EMAIL_VALIDATOR);
+	}
+
+	@Override
+	public boolean validatePanCard(String panCardNumber) {
+		return panCardNumber.matches(PAN_CARD_VALIDATOR);
+	}
+
+	@Override
+	public boolean validateTxnPwd(String transactionPassword) {
+		return transactionPassword.matches(PASSWORD_VALIDATOR);
+	}
+
+	@Override
+	public boolean validateNickName(String nickName) {
+		return nickName.matches(NAME_VALIDATOR);
 	}
 
 }

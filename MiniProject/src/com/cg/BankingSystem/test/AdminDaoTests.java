@@ -11,6 +11,7 @@ import com.cg.BankingSystem.dao.AdminDao;
 import com.cg.BankingSystem.dao.AdminDaoImpl;
 import com.cg.BankingSystem.dto.AccountType;
 import com.cg.BankingSystem.dto.Admin;
+import com.cg.BankingSystem.dto.Customer;
 import com.cg.BankingSystem.dto.LoginBean;
 import com.cg.BankingSystem.dto.SignUp;
 import com.cg.BankingSystem.dto.Transaction;
@@ -55,20 +56,20 @@ public class AdminDaoTests {
 		System.out.println(dao.updatePassword("HelloNew", "AD123"));
 	}
 	
-//	@Ignore
+	@Ignore
 	@Test
 	public void testCreation() throws InternalServerException, AccountNotCreatedException {
 		SignUp newUser = new SignUp();
-		newUser.setName("Vishal");
-		newUser.setAccountType(AccountType.SAVINGS_ACCOUNT);
+		newUser.setName("Shubham");
+		newUser.setAccountType(AccountType.CURRENT_ACCOUNT);
 		newUser.setAddress("Mumbai");
-		newUser.setEmail("abs@gmail.com");
+		newUser.setEmail("abc@gmail.com");
 		newUser.setMobileNo("+919999996666");
-		newUser.setOpeningBal(500);
+		newUser.setOpeningBal(2000);
 		newUser.setPanCardNumber("AB331");
-		newUser.setPassword("121Da");
-		newUser.setTransactionPassword("121Da");
-		newUser.setUserId("CC184");
+		newUser.setPassword("121D4");
+		newUser.setTransactionPassword("121D4");
+		newUser.setUserId("CC185");
 		
 		System.out.println(dao.createNewAccount(newUser));
 	}
@@ -77,6 +78,34 @@ public class AdminDaoTests {
 	@Test
 	public void testFindCustomer() throws InternalServerException, UserNotFoundException {
 		System.out.println(dao.findCustomer("sh655"));
+	}
+	
+	@Ignore
+	@Test
+	public void testSaveExistingUser() throws InternalServerException, UserNotFoundException {
+		Customer existingCustomer = dao.findCustomer("CC185");
+		
+		double openingBal = 10000;
+		
+		SignUp newCustomer = new SignUp();
+		
+		newCustomer.setUserId(existingCustomer.getUserId());
+		newCustomer.setPassword(existingCustomer.getPassword());
+		newCustomer.setName(existingCustomer.getName());
+		newCustomer.setEmail(existingCustomer.getEmailId());
+		newCustomer.setAddress(existingCustomer.getAddress());
+		newCustomer.setMobileNo(existingCustomer.getMobileNumber());
+		newCustomer.setAccountNumber(existingCustomer.getAccountNumber());
+		newCustomer.setTransactionPassword(existingCustomer.getTransactionPassword());
+		newCustomer.setOpeningBal(openingBal);
+		newCustomer.setPanCardNumber(existingCustomer.getPanCardNumber());
+		
+		if (existingCustomer.getAccountType() == AccountType.SAVINGS_ACCOUNT)
+			newCustomer.setAccountType(AccountType.CURRENT_ACCOUNT);
+		else
+			newCustomer.setAccountType(AccountType.SAVINGS_ACCOUNT);
+		
+		dao.saveExistingUser(newCustomer);
 	}
 	
 	@After

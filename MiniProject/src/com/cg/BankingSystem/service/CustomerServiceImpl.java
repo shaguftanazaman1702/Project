@@ -54,7 +54,7 @@ public class CustomerServiceImpl extends BankingSystemServiceImpl implements Cus
 	}
 
 	@Override
-	public boolean validateTransactionPassword(Customer customer, String txnPwd) {
+	public boolean checkTransactionPassword(Customer customer, String txnPwd) {
 		return txnPwd.equals(customer.getTransactionPassword());
 	}
 

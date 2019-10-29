@@ -32,4 +32,23 @@ public class BankingSystemServiceImpl implements BankingSystemService {
 		return dao.updatePassword(newPassword, userId);
 	}
 
+	@Override
+	public boolean validateLongEntry(long min, long max, long input) {
+		boolean isValidNumber = String.valueOf(input).matches(NUMBER_VALIDATOR);
+		boolean isValidRange = input >= min && input <= max;
+		return isValidNumber && isValidRange;
+	}
+
+	@Override
+	public boolean validateDouble(double min, double max, double input) {
+		boolean isValidNumber = String.valueOf(input).matches(DOUBLE_VALIDATOR);
+		boolean isValidRange = input >= min && input <= max;
+		return false;
+	}
+
+	@Override
+	public boolean validateName(String name) {
+		return name.matches(NAME_VALIDATOR);
+	}
+
 }

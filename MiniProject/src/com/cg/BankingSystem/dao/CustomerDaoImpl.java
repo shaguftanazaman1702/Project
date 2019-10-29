@@ -350,8 +350,8 @@ Connection conn = null;
 		try {
 			conn = JDBCUtil.getConnection();
 			PreparedStatement creditBlncStmt = conn.prepareStatement(BankingSystemDao.Queries.GET_TRANSFER_ACCOUNT_BALANCE_QUERY.getValue());
-			PreparedStatement creditStmt = conn.prepareStatement(BankingSystemDao.Queries.CREDIT_ACCOUNT_BALANCE_QUERY.getValue());
-			PreparedStatement debitStmt = conn.prepareStatement(BankingSystemDao.Queries.DEBIT_ACCOUNT_BALANCE_QUERY.getValue());
+			PreparedStatement creditStmt = conn.prepareStatement(BankingSystemDao.Queries.TXN_ACCOUNT_BALANCE_QUERY.getValue());
+			PreparedStatement debitStmt = conn.prepareStatement(BankingSystemDao.Queries.TXN_ACCOUNT_BALANCE_QUERY.getValue());
 			
 			PreparedStatement creditTxnStmt = conn.prepareStatement(BankingSystemDao.Queries.ADD_TRANSACTION_DETAILS.getValue());
 			PreparedStatement debitTxnStmt = conn.prepareStatement(BankingSystemDao.Queries.ADD_TRANSACTION_DETAILS.getValue());
@@ -376,11 +376,39 @@ Connection conn = null;
 			
 			if (debitRowsAffected == 0)
 				return false;
+
+			// Updating balance in local repo
+			fromAccount.setBalance(fromBalance - txnDetails.getTransactionAmount());
+			
+			debitTxnStmt.setString(1, txnDetails.getTransactionDescription());
+			debitTxnStmt.setDate(2, DatabaseUtilities.getSQLDate(LocalDate.now()));
+			debitTxnStmt.setString(3, TransactionType.DEBIT.getValue());
+			debitTxnStmt.setDouble(4, txnDetails.getTransactionAmount());
+			debitTxnStmt.setLong(5, fromAccount.getAccountNumber());
 			
 			int creditRowsAffected = creditStmt.executeUpdate();
 			
 			if(creditRowsAffected == 0) {
-				// Revert debiting from account
+				PreparedStatement creditBackStmt = conn.prepareStatement(BankingSystemDao.Queries.TXN_ACCOUNT_BALANCE_QUERY.getValue());
+				creditBackStmt.setDouble(1, fromAccount.getBalance() + txnDetails.getTransactionAmount());
+				creditBackStmt.setLong(2, fromAccount.getAccountNumber());
+				
+				int creditBackRowsAffected = creditBackStmt.executeUpdate();
+				
+				if (creditBackRowsAffected == 0)
+					throw new InternalServerException("Transaction Failed. Refund will be initiated soon");
+				
+				fromAccount.setBalance(fromAccount.getBalance() + txnDetails.getTransactionAmount());
+				
+				PreparedStatement creditBackTxnStmt = conn.prepareStatement(BankingSystemDao.Queries.ADD_TRANSACTION_DETAILS.getValue());
+				creditBackTxnStmt.setString(1, txnDetails.getTransactionDescription());
+				creditBackTxnStmt.setDate(2, DatabaseUtilities.getSQLDate(LocalDate.now()));
+				creditBackTxnStmt.setString(3, TransactionType.CREDIT.getValue());
+				creditBackTxnStmt.setDouble(4, txnDetails.getTransactionAmount());
+				creditBackTxnStmt.setLong(5, fromAccount.getAccountNumber());
+				
+				creditBackTxnStmt.executeUpdate();
+				
 				return false;
 			}
 			
@@ -389,12 +417,6 @@ Connection conn = null;
 			creditTxnStmt.setString(3, TransactionType.CREDIT.getValue());
 			creditTxnStmt.setDouble(4, txnDetails.getTransactionAmount());
 			creditTxnStmt.setLong(5, otherAccount.getAccountNumber());
-			
-			debitTxnStmt.setString(1, txnDetails.getTransactionDescription());
-			debitTxnStmt.setDate(2, DatabaseUtilities.getSQLDate(LocalDate.now()));
-			debitTxnStmt.setString(3, TransactionType.DEBIT.getValue());
-			debitTxnStmt.setDouble(4, txnDetails.getTransactionAmount());
-			debitTxnStmt.setLong(5, fromAccount.getAccountNumber());
 			
 			creditTxnStmt.executeUpdate();
 			debitTxnStmt.executeUpdate();

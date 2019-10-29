@@ -26,7 +26,7 @@ public interface CustomerService extends BankingSystemService {
 
 	boolean validateTransactionAmount(Customer customer, double transferAmount);
 
-	boolean validateTransactionPassword(Customer customer, String txnPwd);
+	boolean checkTransactionPassword(Customer customer, String txnPwd);
 
 	Account fetchOtherExistingAccount(long accountNumber, AccountType accountType) throws AccountsNotFoundException, InternalServerException;
 

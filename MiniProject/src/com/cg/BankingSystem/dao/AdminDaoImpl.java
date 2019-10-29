@@ -134,13 +134,14 @@ public class AdminDaoImpl implements AdminDao {
 		
 		try {
 			conn = JDBCUtil.getConnection();
+			conn.setAutoCommit(false);
 			PreparedStatement accountInsertStmt = conn.prepareStatement(BankingSystemDao.Queries.INSERT_ACCOUNT_QUERY.getValue());
 			PreparedStatement customerInsertStmt = conn.prepareStatement(BankingSystemDao.Queries.INSERT_CUSTOMER_QUERY.getValue());
 			PreparedStatement userInsertStmt = conn.prepareStatement(BankingSystemDao.Queries.INSERT_USER_QUERY.getValue());
 			
 			long accountNumber = insertIntoAccount(conn, accountInsertStmt, newCustomer);
-			insertIntoCustomer(customerInsertStmt, newCustomer, accountNumber);
-			insertIntoUser(userInsertStmt, newCustomer, accountNumber);
+			insertIntoCustomer(conn, customerInsertStmt, newCustomer, accountNumber);
+			insertIntoUser(conn, userInsertStmt, newCustomer, accountNumber);
 			
 			return accountNumber;
 		} catch (SQLException e) {
@@ -155,22 +156,29 @@ public class AdminDaoImpl implements AdminDao {
 		}
 	}
 
-	private void insertIntoUser(PreparedStatement userInsertStmt, SignUp newCustomer, long accountNumber) throws AccountNotCreatedException, SQLException {
+	private void insertIntoUser(Connection conn, PreparedStatement userInsertStmt, SignUp newCustomer, long accountNumber) throws AccountNotCreatedException, SQLException {
 		userInsertStmt.setString(1, newCustomer.getUserId());
 		userInsertStmt.setString(2, newCustomer.getPassword());
 		userInsertStmt.setString(3, newCustomer.getTransactionPassword());
 		userInsertStmt.setString(4, "N"); // Change this magic string
 		userInsertStmt.setLong(5, accountNumber);
 		
-		int rowsAffected = userInsertStmt.executeUpdate();
+		int rowsAffected;
+		try {
+			rowsAffected = userInsertStmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("In User SQL Exception");
+			conn.rollback();
+			throw e;
+		}
 		
 		if(rowsAffected == 0) {
-			// revert insert in account master and customer table
+			conn.rollback();
 			throw new AccountNotCreatedException("Account couldn't be created, please try again later");
 		}
 	}
 
-	private void insertIntoCustomer(PreparedStatement customerInsertStmt, SignUp newCustomer, long accountNumber) throws AccountNotCreatedException, SQLException {
+	private void insertIntoCustomer(Connection conn, PreparedStatement customerInsertStmt, SignUp newCustomer, long accountNumber) throws AccountNotCreatedException, SQLException {
 		customerInsertStmt.setLong(1, accountNumber);
 		customerInsertStmt.setString(2, newCustomer.getName());
 		customerInsertStmt.setString(3, newCustomer.getEmail());
@@ -178,10 +186,17 @@ public class AdminDaoImpl implements AdminDao {
 		customerInsertStmt.setString(5, newCustomer.getPanCardNumber());
 		customerInsertStmt.setString(6, newCustomer.getMobileNo());
 		
-		int rowsAffected = customerInsertStmt.executeUpdate();
+		int rowsAffected;
+		try {
+			rowsAffected = customerInsertStmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("In Customer SQL Exception");
+			conn.rollback();
+			throw e;
+		}
 		
 		if (rowsAffected == 0) {
-			// Revert insert in account master table
+			conn.rollback();
 			throw new AccountNotCreatedException("Account couldn't be created, please try again later");
 		}
 	}
@@ -198,10 +213,17 @@ public class AdminDaoImpl implements AdminDao {
 			
 		PreparedStatement getAccNoStmt = conn.prepareStatement(BankingSystemDao.Queries.GET_ACCOUNT_NUMBER_QUERY.getValue());
 			
-		ResultSet accountNumber = getAccNoStmt.executeQuery();
+		ResultSet accountNumber;
+		try {
+			accountNumber = getAccNoStmt.executeQuery();
+		} catch (SQLException e) {
+			System.out.println("In Account SQL Exception");
+			conn.rollback();
+			throw e;
+		}
 			
 		if (!accountNumber.next()) {
-			// Write code to revert writing to account table
+			conn.rollback();
 			throw new AccountNotCreatedException("Account couldn't be created, please try again later");
 		}
 		return accountNumber.getLong(1);

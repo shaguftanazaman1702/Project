@@ -13,5 +13,5 @@ public interface AdminService extends BankingSystemService {
 	Customer findCustomer(String userId) throws InternalServerException, UserNotFoundException;
 
 	boolean saveExistingUser(SignUp newCustomer) throws InternalServerException;
-	
+
 }

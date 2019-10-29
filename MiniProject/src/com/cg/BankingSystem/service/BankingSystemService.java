@@ -18,6 +18,24 @@ public interface BankingSystemService {
 	
 	boolean updatePassword(String newPassword, String userId) throws InternalServerException;
 	
+	boolean validateLongEntry(long min, long max, long input);
+	
+	boolean validateAlphaNumeric(String input);
+	
+	boolean validateDouble(double min, double max, double input);
+	
+	boolean validateName(String name);
+
+	boolean validateAddress(String address);
+
+	boolean validateContact(String mobileNo);
+
+	boolean validateEmail(String email);
+
+	boolean validatePanCard(String panCardNumber);
+
+	boolean validateTxnPwd(String transactionPassword);
+	
 	static BankingSystemService getInstance(LoginBean bean) {
 		if (bean.getUserId().contains("AD"))
 			return new AdminServiceImpl(new AdminDaoImpl());
@@ -25,5 +43,24 @@ public interface BankingSystemService {
 			return new CustomerServiceImpl(new CustomerDaoImpl());
 		return null;
 	}
+
+	static boolean validateAdminUserID(String input) {
+		return input.matches(ADMIN_USER_ID_VALIDATOR);
+	}
+
+	static boolean validateCustomerUserID(String input) {
+		return input.matches(CUSTOMER_USER_ID_VALIDATOR);
+	}
+	
+	static boolean validatePassword(String password) {
+		return password.matches(PASSWORD_VALIDATOR);
+	}
+	
+	String NUMBER_VALIDATOR = "[0-9]+";
+	String DOUBLE_VALIDATOR = "[0-9]+.[0-9]+";
+	String ADMIN_USER_ID_VALIDATOR = "AD[A-Za-z0-9]+";
+	String CUSTOMER_USER_ID_VALIDATOR = "CC[A-Za-z0-9]+";
+	String NAME_VALIDATOR = "[A-Z][A_Za-z ]+";
+	String PASSWORD_VALIDATOR = "[A-Za-z0-9@_!$]{8,15}";
 
 }

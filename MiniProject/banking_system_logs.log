@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 2019-10-30-main-ERROR-com.cg.BankingSystem.dao.AdminDaoImpl:InvalidCredentialsException thrown is AdminDao.authenticateUser() method with cause: Invalid Credentials! Please enter valid credentials.
 2019-10-30-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:Admin logged in successfully at: 2019-10-30T16:49:59.260
 2019-10-30-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:Create new account method initiated in DAO Layer.
@@ -27,3 +28,6 @@
 
 2019-10-30-main-INFO -com.cg.BankingSystem.dao.CustomerDaoImpl:CustomerDao.transferFund(): 100.0 debited from: 10. Attempting crediting into: 11
 2019-10-30-main-INFO -com.cg.BankingSystem.dao.CustomerDaoImpl:CustomerDao.transferFund(): Transaction for amount: 100.0 from: 10 to: 11 completed successfully at: 2019-10-30T17:41:38.839
+=======
+2019-10-30-main-ERROR-com.cg.BankingSystem.dao.AdminDaoImpl:InternalServerException thrown is AdminDao.authenticateUser() method with cause: null
+>>>>>>> a826178499a5b62a7509ba90de41ab3f00bc7546

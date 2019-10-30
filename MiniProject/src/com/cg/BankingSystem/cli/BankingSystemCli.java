@@ -740,10 +740,10 @@ public class BankingSystemCli {
 			case 2:
 				boolean isValidAddress = false;
 				String newAddress = null;
-						
+				scanner.nextLine();
 				while (!isValidAddress) {
-					System.out.println("Enter new address: ");
-					newAddress = scanner.next();
+					System.out.print("Enter new address: ");
+					newAddress = scanner.nextLine();
 					
 					isValidAddress = service.validateAddress(newAddress);
 					if (!isValidAddress)

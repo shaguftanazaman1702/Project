@@ -34,7 +34,7 @@ public class CustomerDaoTests {
 		dao = new CustomerDaoImpl();
 	}
 	
-//	@Ignore
+	@Ignore
 	@Test
 	public void testAuthentication() throws InvalidCredentialsException, InternalServerException {
 		LoginBean bean = new LoginBean();
@@ -111,6 +111,18 @@ public class CustomerDaoTests {
 		
 		for (Request request: requests)
 			System.out.println(request);
+	}
+	
+	@Ignore
+	@Test
+	public void testUpdatePassword() throws InternalServerException {
+		dao.updatePassword("124D4", "CC184");
+	}
+	
+//	@Ignore
+	@Test
+	public void testChangeMobile() throws InternalServerException {
+		dao.changeContactNumber("+917243567890", 2);
 	}
 	
 	@After

@@ -199,7 +199,7 @@ public class CustomerDaoImpl implements CustomerDao {
 			updateContactStmt = conn.prepareStatement(Queries.CHANGE_CONTACT_NUMBER_QUERY.getValue());
 			updateContactStmt.setString(1, newNumber);
 			updateContactStmt.setLong(2, accountNumber);
-			updateContactStmt.executeUpdate();
+
 			int rowsAffected = updateContactStmt.executeUpdate();
 			if (rowsAffected == 0) {
 				customerDaoLogger.warn("Customer with account_id: " + accountNumber + " couldn't update contact number.");
@@ -232,7 +232,7 @@ public class CustomerDaoImpl implements CustomerDao {
 			changeAddressStmt = conn.prepareStatement(Queries.CHANGE_ADDRESS_QUERY.getValue());
 			changeAddressStmt.setString(1, newAddress);
 			changeAddressStmt.setLong(2, accountNumber);
-			changeAddressStmt.executeUpdate();
+
 			int rowsAffected = changeAddressStmt.executeUpdate();
 			if (rowsAffected == 0) {
 				customerDaoLogger.warn("Customer with account_id: " + accountNumber + " couldn't update address.");

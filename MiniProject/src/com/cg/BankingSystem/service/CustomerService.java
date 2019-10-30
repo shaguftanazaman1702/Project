@@ -56,7 +56,7 @@ public interface CustomerService extends BankingSystemService {
 	List<Request> getRequests(long accountNumber) throws NoServicesMadeException, InternalServerException;
 
 	/**
-	 * This method returns the maximum limit for a transaction.
+	 * This method returns the maximum limit for a transaction. Max - 10 Lakh
 	 * @return The limit of the transaction.
 	 */
 	double getTransactionLimit();

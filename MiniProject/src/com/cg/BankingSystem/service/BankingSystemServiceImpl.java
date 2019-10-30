@@ -1,5 +1,6 @@
 package com.cg.BankingSystem.service;
 
+import java.util.Base64;
 import java.util.List;
 
 import com.cg.BankingSystem.dao.BankingSystemDao;
@@ -18,7 +19,13 @@ public class BankingSystemServiceImpl implements BankingSystemService {
 	
 	@Override
 	public Object authenticateUser(LoginBean bean) throws InvalidCredentialsException, InternalServerException {
+		if (bean.getUserId().contains("CC"))
+			encodePassword(bean);
 		return dao.authenticateUser(bean);
+	}
+
+	private void encodePassword(LoginBean bean) {
+		bean.setPassword(Base64.getEncoder().encodeToString(bean.getPassword().getBytes()));
 	}
 
 	@Override

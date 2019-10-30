@@ -3,6 +3,7 @@ package com.cg.BankingSystem.test;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Base64;
 import java.util.List;
 
 import org.junit.After;
@@ -14,6 +15,7 @@ import com.cg.BankingSystem.dao.CustomerDao;
 import com.cg.BankingSystem.dao.CustomerDaoImpl;
 import com.cg.BankingSystem.dao.DatabaseUtilities;
 import com.cg.BankingSystem.dto.Account;
+import com.cg.BankingSystem.dto.AccountType;
 import com.cg.BankingSystem.dto.Customer;
 import com.cg.BankingSystem.dto.LoginBean;
 import com.cg.BankingSystem.dto.Request;
@@ -32,15 +34,16 @@ public class CustomerDaoTests {
 		dao = new CustomerDaoImpl();
 	}
 	
-	@Ignore
+//	@Ignore
 	@Test
 	public void testAuthentication() throws InvalidCredentialsException, InternalServerException {
 		LoginBean bean = new LoginBean();
-		bean.setUserId("CC234");
-		bean.setPassword("124Da");
+		bean.setUserId("CC125");
+		bean.setPassword(Base64.getEncoder().encodeToString("Abcdefg%4".getBytes()));
+		bean.setAccountType(AccountType.SAVINGS_ACCOUNT);
 		
 		Customer customer = dao.authenticateUser(bean);
-		System.out.println(customer.getEmailId());
+		System.out.println(customer.getPassword() + "\t" + customer.getTransactionPassword());
 	}
 	
 	@Ignore

@@ -1,5 +1,7 @@
 package com.cg.BankingSystem.service;
 
+import java.util.Base64;
+
 import com.cg.BankingSystem.dao.AdminDao;
 import com.cg.BankingSystem.dao.AdminDaoImpl;
 import com.cg.BankingSystem.exception.MaxAccountsDefinedForUserException;
@@ -20,7 +22,14 @@ public class AdminServiceImpl extends BankingSystemServiceImpl implements AdminS
 
 	@Override
 	public long createNewAccount(SignUp newCustomer) throws AccountNotCreatedException, InternalServerException {
+		encodePassword(newCustomer);
 		return dao.createNewAccount(newCustomer);
+	}
+
+	private void encodePassword(SignUp newCustomer) {
+		Base64.Encoder encoder = Base64.getEncoder();
+		newCustomer.setPassword(encoder.encodeToString(newCustomer.getPassword().getBytes()));
+		newCustomer.setTransactionPassword(encoder.encodeToString(newCustomer.getTransactionPassword().getBytes()));
 	}
 
 	@Override

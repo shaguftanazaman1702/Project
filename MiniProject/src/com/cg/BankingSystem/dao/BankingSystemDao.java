@@ -10,7 +10,6 @@ import com.cg.BankingSystem.exception.NoTransactionsExistException;
 
 /**
  * This is the base interface for conducting Banking operations.
- * @author Swaroop Nath, Pradeepta Panja, Sayantan Sarkar
  * @param <T> - Possible Values: Admin and Customer.
  */
 public interface BankingSystemDao<T> {

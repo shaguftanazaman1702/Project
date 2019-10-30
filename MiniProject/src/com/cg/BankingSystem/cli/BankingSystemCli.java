@@ -8,6 +8,8 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
+import org.apache.log4j.PropertyConfigurator;
+
 import com.cg.BankingSystem.dto.Account;
 import com.cg.BankingSystem.dto.AccountType;
 import com.cg.BankingSystem.dto.Admin;
@@ -62,6 +64,7 @@ public class BankingSystemCli {
 	 * @throws AccountsNotFoundException
 	 */
 	public static void main(String[] args) {
+		PropertyConfigurator.configure("src/log4j.properties");
 		System.out.println("WELCOME TO BANKING SYSTEM!");
 
 		while (true) {

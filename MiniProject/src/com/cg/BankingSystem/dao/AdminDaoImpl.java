@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.cg.BankingSystem.dto.Admin;
 import com.cg.BankingSystem.dto.Customer;
 import com.cg.BankingSystem.dto.LoginBean;
@@ -23,10 +25,10 @@ import com.cg.BankingSystem.exception.UserNotFoundException;
 
 public class AdminDaoImpl implements AdminDao {
 
-//	static Logger adminDaoLogger;
+	static Logger adminDaoLogger;
 	
 	static {
-//		adminDaoLogger = Logger.getLogger(AdminDaoImpl.class.getName());
+		adminDaoLogger = Logger.getLogger(AdminDaoImpl.class.getName());
 	}
 	
 	@Override
@@ -43,7 +45,7 @@ public class AdminDaoImpl implements AdminDao {
 			ResultSet credCheckResult = checkCredStmt.executeQuery();
 			
 			if (!credCheckResult.next()) {
-//				adminDaoLogger.error("InvalidCredentialsException thrown is AdminDao.authenticateUser() method with cause: Invalid Credentials! Please enter valid credentials.");
+				adminDaoLogger.error("InvalidCredentialsException thrown is AdminDao.authenticateUser() method with cause: Invalid Credentials! Please enter valid credentials.");
 				throw new InvalidCredentialsException("Invalid Credentials!\nPlease enter valid credentials.");
 			}
 			fetchAdminStmt = conn.prepareStatement(BankingSystemDao.Queries.GET_ADMIN_DETAILS_QUERY.getValue());
@@ -52,7 +54,7 @@ public class AdminDaoImpl implements AdminDao {
 			ResultSet adminDetails = fetchAdminStmt.executeQuery();
 			
 			if (!adminDetails.next()) {
-//				adminDaoLogger.info("InternalServerException thrown is AdminDao.authenticateUser() method with cause: Server is facing issues, please try again later.");
+				adminDaoLogger.info("InternalServerException thrown is AdminDao.authenticateUser() method with cause: Server is facing issues, please try again later.");
 				throw new InternalServerException("Server is facing issues, please try again later.");
 			}
 			
@@ -60,10 +62,10 @@ public class AdminDaoImpl implements AdminDao {
 			fetchedAdmin.setUserId(adminDetails.getString(1));
 			fetchedAdmin.setUserName(adminDetails.getString(2));
 			
-//			adminDaoLogger.info("Admin logged in successfully at: " + LocalDateTime.now());
+			adminDaoLogger.info("Admin logged in successfully at: " + LocalDateTime.now());
 			return fetchedAdmin;
 		} catch (SQLException ex) {
-//			adminDaoLogger.error("InternalServerException thrown is AdminDao.authenticateUser() method with cause: " + ex.getCause());
+			adminDaoLogger.error("InternalServerException thrown is AdminDao.authenticateUser() method with cause: " + ex.getMessage());
 			throw new InternalServerException(ex.getMessage());
 		} finally {
 			try {
@@ -75,7 +77,7 @@ public class AdminDaoImpl implements AdminDao {
 					conn.close();
 				}
 			} catch (SQLException e) {
-//				adminDaoLogger.error("AdminDao.authenticateUser(): " + e.getStackTrace());
+				adminDaoLogger.error("AdminDao.authenticateUser(): " + e.getStackTrace());
 			}
 		}
 	}
@@ -107,13 +109,13 @@ public class AdminDaoImpl implements AdminDao {
 			}
 			
 			if (transactions.size() == 0) {
-//				adminDaoLogger.error("NoTransactionsExistException thrown is AdminDao.listTransactions() method with cause: No transactions found for user: " + accountNumber);
+				adminDaoLogger.error("NoTransactionsExistException thrown is AdminDao.listTransactions() method with cause: No transactions found for user: " + accountNumber);
 				throw new NoTransactionsExistException("No transactions found for user: " + accountNumber);
 			}
 			
 			return transactions;
 		} catch (SQLException ex) {
-//			adminDaoLogger.error("InternalServerException thrown is AdminDao.listTransactions() method with cause: " + ex.getCause());
+			adminDaoLogger.error("InternalServerException thrown is AdminDao.listTransactions() method with cause: " + ex.getMessage());
 			throw new InternalServerException(ex.getMessage());
 		} finally {
 			try {
@@ -122,7 +124,7 @@ public class AdminDaoImpl implements AdminDao {
 				if (conn != null)
 					conn.close();
 			} catch (Exception e) {
-//				adminDaoLogger.error("AdminDao.listTransactions(): " + e.getStackTrace());
+				adminDaoLogger.error("AdminDao.listTransactions(): " + e.getStackTrace());
 			}
 		}
 	}
@@ -141,13 +143,13 @@ public class AdminDaoImpl implements AdminDao {
 			int rowsAffected = updatePwdStmt.executeUpdate();
 			
 			if (rowsAffected > 0) {
-//				adminDaoLogger.info("Admin updated the password");
+				adminDaoLogger.info("Admin updated the password");
 				return true;
 			}
-//			adminDaoLogger.warn("Password changed attempted, but failed");
+			adminDaoLogger.warn("Password changed attempted, but failed");
 			return false;
 		} catch (SQLException e) {
-//			adminDaoLogger.error("InternalServerException thrown is AdminDao.updatePassword() method with cause: " + e.getCause());
+			adminDaoLogger.error("InternalServerException thrown is AdminDao.updatePassword() method with cause: " + e.getMessage());
 			throw new InternalServerException(e.getMessage());
 		} finally {
 			try {
@@ -156,7 +158,7 @@ public class AdminDaoImpl implements AdminDao {
 				if (conn != null)
 					conn.close();
 			} catch (SQLException e) {
-//				adminDaoLogger.error("AdminDao.updatePassword(): " + e.getStackTrace());
+				adminDaoLogger.error("AdminDao.updatePassword(): " + e.getStackTrace());
 			}
 		}
 	}
@@ -166,7 +168,7 @@ public class AdminDaoImpl implements AdminDao {
 		Connection conn = null;
 		PreparedStatement accountInsertStmt = null, customerInsertStmt = null, userInsertStmt = null;
 		
-//		adminDaoLogger.info("Create new account method initiated in DAO Layer.");
+		adminDaoLogger.info("Create new account method initiated in DAO Layer.");
 		
 		try {
 			conn = JDBCUtil.getConnection();
@@ -176,15 +178,15 @@ public class AdminDaoImpl implements AdminDao {
 			userInsertStmt = conn.prepareStatement(BankingSystemDao.Queries.INSERT_USER_QUERY.getValue());
 			
 			long accountNumber = insertIntoAccount(conn, accountInsertStmt, newCustomer);
-//			adminDaoLogger.info("AdminDao.createNewAccount(): User details for " + newCustomer.getUserId() + " entered in account_master table.");
+			adminDaoLogger.info("AdminDao.createNewAccount(): User details for " + newCustomer.getUserId() + " entered in account_master table.");
 			insertIntoCustomer(conn, customerInsertStmt, newCustomer, accountNumber);
-//			adminDaoLogger.info("AdminDao.createNewAccount(): User details for " + newCustomer.getUserId() + " entered in customer table.");
+			adminDaoLogger.info("AdminDao.createNewAccount(): User details for " + newCustomer.getUserId() + " entered in customer table.");
 			insertIntoUser(conn, userInsertStmt, newCustomer, accountNumber);
-//			adminDaoLogger.info("AdminDao.createNewAccount(): User details for " + newCustomer.getUserId() + " entered in user_table.");
+			adminDaoLogger.info("AdminDao.createNewAccount(): User details for " + newCustomer.getUserId() + " entered in user_table.");
 			
 			return accountNumber;
 		} catch (SQLException e) {
-//			adminDaoLogger.error("InternalServerException thrown is AdminDao.createNewAccount() method with cause: " + e.getCause());
+			adminDaoLogger.error("InternalServerException thrown is AdminDao.createNewAccount() method with cause: " + e.getMessage());
 			throw new InternalServerException(e.getMessage());
 		} finally {
 			try {
@@ -197,7 +199,7 @@ public class AdminDaoImpl implements AdminDao {
 				if (conn != null)
 					conn.close();
 			} catch (SQLException e) {
-//				adminDaoLogger.error("AdminDao.createNewAccount(): " + e.getStackTrace());
+				adminDaoLogger.error("AdminDao.createNewAccount(): " + e.getStackTrace());
 			}
 		}
 	}
@@ -206,26 +208,26 @@ public class AdminDaoImpl implements AdminDao {
 		userInsertStmt.setString(1, newCustomer.getUserId());
 		userInsertStmt.setString(2, newCustomer.getPassword());
 		userInsertStmt.setString(3, newCustomer.getTransactionPassword());
-		userInsertStmt.setString(4, "N"); // Change this magic string
+		userInsertStmt.setString(4, "N"); 
 		userInsertStmt.setLong(5, accountNumber);
 		
 		int rowsAffected;
 		try {
 			rowsAffected = userInsertStmt.executeUpdate();
 		} catch (SQLException e) {
-//			adminDaoLogger.error("AdminDao.createNewAccount(): User Details for " + newCustomer.getUserId() + " could not be updated in user_table. Rolling back from account_master and customer tables.");
+			adminDaoLogger.error("AdminDao.createNewAccount(): User Details for " + newCustomer.getUserId() + " could not be updated in user_table. Rolling back from account_master and customer tables.");
 			conn.rollback();
 			throw e;
 		}
 		
 		if(rowsAffected == 0) {
-//			adminDaoLogger.error("AdminDao.createNewAccount(): User Details for " + newCustomer.getUserId() + " could not be updated in user_table. Rolling back from account_master and customer tables.");
+			adminDaoLogger.error("AdminDao.createNewAccount(): User Details for " + newCustomer.getUserId() + " could not be updated in user_table. Rolling back from account_master and customer tables.");
 			conn.rollback();
-//			adminDaoLogger.error("AccountNotCreatedException thrown is saveExistingUser method with cause: Account couldn't be created, please try again later");
+			adminDaoLogger.error("AccountNotCreatedException thrown is saveExistingUser method with cause: Account couldn't be created, please try again later");
 			throw new AccountNotCreatedException("Account couldn't be created, please try again later");
 		}
 		
-//		adminDaoLogger.info("AdminDao.createNewAccount(): New account added to user_table for creating new account.");
+		adminDaoLogger.info("AdminDao.createNewAccount(): New account added to user_table for creating new account.");
 	}
 
 	private void insertIntoCustomer(Connection conn, PreparedStatement customerInsertStmt, SignUp newCustomer, long accountNumber) throws AccountNotCreatedException, SQLException {
@@ -240,19 +242,19 @@ public class AdminDaoImpl implements AdminDao {
 		try {
 			rowsAffected = customerInsertStmt.executeUpdate();
 		} catch (SQLException e) {
-//			adminDaoLogger.error("AdminDao.createNewAccount(): User Details for " + newCustomer.getUserId() + " could not be updated in customer table. Rolling back from account_master table.");
+			adminDaoLogger.error("AdminDao.createNewAccount(): User Details for " + newCustomer.getUserId() + " could not be updated in customer table. Rolling back from account_master table.");
 			conn.rollback();
 			throw e;
 		}
 		
 		if (rowsAffected == 0) {
-//			adminDaoLogger.error("AdminDao.createNewAccount(): User Details for " + newCustomer.getUserId() + " could not be updated in customer table. Rolling back from account_master table.");
+			adminDaoLogger.error("AdminDao.createNewAccount(): User Details for " + newCustomer.getUserId() + " could not be updated in customer table. Rolling back from account_master table.");
 			conn.rollback();
-//			adminDaoLogger.error("AccountNotCreatedException thrown is saveExistingUser method with cause: Account couldn't be created, please try again later");
+			adminDaoLogger.error("AccountNotCreatedException thrown is saveExistingUser method with cause: Account couldn't be created, please try again later");
 			throw new AccountNotCreatedException("Account couldn't be created, please try again later");
 		}
 		
-//		adminDaoLogger.info("AdminDao.createNewAccount(): New account added to customer table for creating new account.");
+		adminDaoLogger.info("AdminDao.createNewAccount(): New account added to customer table for creating new account.");
 	}
 
 	private long insertIntoAccount(Connection conn, PreparedStatement accountInsertStmt, SignUp newCustomer) throws AccountNotCreatedException, InternalServerException, SQLException {
@@ -263,11 +265,11 @@ public class AdminDaoImpl implements AdminDao {
 		int rowsAffected = accountInsertStmt.executeUpdate();
 		
 		if (rowsAffected == 0) {
-//			adminDaoLogger.error("AccountNotCreatedException thrown is saveExistingUser method with cause: " + e.getCause());
+			adminDaoLogger.error("AccountNotCreatedException thrown is saveExistingUser method with cause: Account couldn't be created now, please try again later");
 			throw new AccountNotCreatedException("Account couldn't be created now, please try again later");
 		}
 		
-//		adminDaoLogger.info("AdminDao.createNewAccount(): New account added to account_master table for creating new account.");
+		adminDaoLogger.info("AdminDao.createNewAccount(): New account added to account_master table for creating new account.");
 			
 		PreparedStatement getAccNoStmt = conn.prepareStatement(BankingSystemDao.Queries.GET_ACCOUNT_NUMBER_QUERY.getValue());
 			
@@ -275,15 +277,15 @@ public class AdminDaoImpl implements AdminDao {
 		try {
 			accountNumber = getAccNoStmt.executeQuery();
 		} catch (SQLException e) {
-//			adminDaoLogger.error("AdminDao.createNewAccount(): User Details for " + newCustomer.getUserId() + "added to account_master table, account_id could not be fetched. Rolling backing changes from account_master table.");
+			adminDaoLogger.error("AdminDao.createNewAccount(): User Details for " + newCustomer.getUserId() + "added to account_master table, account_id could not be fetched. Rolling backing changes from account_master table.");
 			conn.rollback();
 			throw e;
 		}
 			
 		if (!accountNumber.next()) {
-//			adminDaoLogger.error("AdminDao.createNewAccount(): User Details for " + newCustomer.getUserId() + "added to account_master table, account_id could not be fetched. Rolling backing changes from account_master table.");
+			adminDaoLogger.error("AdminDao.createNewAccount(): User Details for " + newCustomer.getUserId() + "added to account_master table, account_id could not be fetched. Rolling backing changes from account_master table.");
 			conn.rollback();
-//			adminDaoLogger.error("AccountNotCreatedException thrown is saveExistingUser method with cause: Account couldn't be created, please try again later");
+			adminDaoLogger.error("AccountNotCreatedException thrown is saveExistingUser method with cause: Account couldn't be created, please try again later");
 			throw new AccountNotCreatedException("Account couldn't be created, please try again later");
 		}
 		return accountNumber.getLong(1);
@@ -305,11 +307,11 @@ public class AdminDaoImpl implements AdminDao {
 			ResultSet userDetails = findUserStmt.executeQuery();
 			
 			if (!userDetails.next()) {
-//				adminDaoLogger.error("UserNotFoundException thrown is AdminDao.findCustomer() method with cause: No users found with ID: " + userId);
+				adminDaoLogger.error("UserNotFoundException thrown is AdminDao.findCustomer() method with cause: No users found with ID: " + userId);
 				throw new UserNotFoundException("No users found with ID: " + userId);
 			}
 			
-//			adminDaoLogger.info("AdminDao.findCustomer(): Details fetched from user_table successfully.");
+			adminDaoLogger.info("AdminDao.findCustomer(): Details fetched from user_table successfully.");
 			
 			findCustomerStmt.setLong(1, userDetails.getLong(5));
 			findAccountStmt.setLong(1, userDetails.getLong(5));
@@ -318,11 +320,11 @@ public class AdminDaoImpl implements AdminDao {
 			ResultSet accountDetails = findAccountStmt.executeQuery();
 			
 			if (!customerDetails.next() || !accountDetails.next()) {
-//				adminDaoLogger.error("InternalServerException thrown is AdminDao.findCustomer() method with cause: Server is facing issues, please try again later.");
+				adminDaoLogger.error("InternalServerException thrown is AdminDao.findCustomer() method with cause: Server is facing issues, please try again later.");
 				throw new InternalServerException("Server is facing issues, please try again later.");
 			}
 			
-//			adminDaoLogger.info("AdminDao.findCustomer(): Details fetched from customer and account_master tables successfully.");
+			adminDaoLogger.info("AdminDao.findCustomer(): Details fetched from customer and account_master tables successfully.");
 			
 			Customer fetchedCustomer = new Customer();
 			
@@ -340,7 +342,7 @@ public class AdminDaoImpl implements AdminDao {
 			
 			return fetchedCustomer;
 		} catch (SQLException e) {
-//			adminDaoLogger.error("InternalServerException thrown is AdminDao.findCustomer() method with cause: " + e.getCause());
+			adminDaoLogger.error("InternalServerException thrown is AdminDao.findCustomer() method with cause: " + e.getMessage());
 			throw new InternalServerException(e.getMessage());
 		} finally {
 			try {
@@ -353,7 +355,7 @@ public class AdminDaoImpl implements AdminDao {
 				if (conn != null)
 					conn.close();
 			} catch (SQLException e) {
-//				adminDaoLogger.error("AdminDao.findCustomer(): " + e.getStackTrace());
+				adminDaoLogger.error("AdminDao.findCustomer(): " + e.getStackTrace());
 			}
 		}
 	}
@@ -375,13 +377,13 @@ public class AdminDaoImpl implements AdminDao {
 			int rowsAffected = saveUserStmt.executeUpdate();
 			
 			if (rowsAffected == 0) {
-//				adminDaoLogger.error("AdminDao.saveExistingUser(): Adding new account into accounts_master table for existing user failed.");
+				adminDaoLogger.error("AdminDao.saveExistingUser(): Adding new account into accounts_master table for existing user failed.");
 				return false;
 			}
-//			adminDaoLogger.info("AdminDao.saveExistingUser(): Adding new account into accounts_master table for existing user successful.");
+			adminDaoLogger.info("AdminDao.saveExistingUser(): Adding new account into accounts_master table for existing user successful.");
 			return true;
 		} catch (SQLException e) {
-//			adminDaoLogger.error("MaxAccountsDefinedForUserException thrown is saveExistingUser method with cause: " + e.getCause());
+			adminDaoLogger.error("MaxAccountsDefinedForUserException thrown is saveExistingUser method with cause: " + e.getMessage());
 			throw new MaxAccountsDefinedForUserException("User already has Savings and Current account in the Bank.");
 		} finally {
 			try {

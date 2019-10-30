@@ -14,7 +14,6 @@ import com.cg.BankingSystem.exception.RequestCannotBeProcessedException;
 /**
  * This class defines functionalities which are specific to the customer of the bank.
  * It extends {@link BankingSystemDao} with generic type set to Customer.
- * @author Pradeepta Panja, Sayantan Sarkar
  */
 public interface CustomerDao extends BankingSystemDao<Customer> {
 

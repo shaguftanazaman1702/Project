@@ -11,7 +11,6 @@ import com.cg.BankingSystem.exception.UserNotFoundException;
 /**
  * This interface declares method that are specific to the Bank Admin. It extends the functionality from {@link BankingSystemDao}
  * with generic argument set to Admin.
- * @author Swaroop Nath
  */
 public interface AdminDao extends BankingSystemDao<Admin> {
 	

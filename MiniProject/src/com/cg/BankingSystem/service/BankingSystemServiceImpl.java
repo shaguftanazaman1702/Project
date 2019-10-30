@@ -19,13 +19,11 @@ public class BankingSystemServiceImpl implements BankingSystemService {
 	
 	@Override
 	public Object authenticateUser(LoginBean bean) throws InvalidCredentialsException, InternalServerException {
-		if (bean.getUserId().contains("CC"))
-			encodePassword(bean);
+		if (bean.getUserId().contains("CC")) {
+			// Encoding password if user is a customer, before authenticating.
+			bean.setPassword(Base64.getEncoder().encodeToString(bean.getPassword().getBytes()));
+		}
 		return dao.authenticateUser(bean);
-	}
-
-	private void encodePassword(LoginBean bean) {
-		bean.setPassword(Base64.getEncoder().encodeToString(bean.getPassword().getBytes()));
 	}
 
 	@Override
@@ -36,19 +34,25 @@ public class BankingSystemServiceImpl implements BankingSystemService {
 
 	@Override
 	public boolean updatePassword(String newPassword, String userId) throws InternalServerException {
-		return dao.updatePassword(newPassword, userId);
+		// Encoding password before storing it.
+		String encodedPassword = Base64.getEncoder().encodeToString(newPassword.getBytes());
+		return dao.updatePassword(encodedPassword, userId);
 	}
 
 	@Override
 	public boolean validateLongEntry(long min, long max, long input) {
+		// Checking if the input is a valid numbers
 		boolean isValidNumber = String.valueOf(input).matches(NUMBER_VALIDATOR);
+		// Checking if the input is in a valid range
 		boolean isValidRange = input >= min && input <= max;
 		return isValidNumber && isValidRange;
 	}
 
 	@Override
 	public boolean validateDouble(double min, double max, double input) {
+		// Checking if the input is a valid number
 		boolean isValidNumber = String.valueOf(input).matches(DOUBLE_VALIDATOR);
+		// Checking if the input is in a valid range
 		boolean isValidRange = input >= min && input <= max;
 		return isValidNumber && isValidRange;
 	}

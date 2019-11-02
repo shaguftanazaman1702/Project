@@ -437,7 +437,7 @@ public class BankingSystemCli {
 		}
 
 		while (!isValidPassword) {
-			System.out.print("Enter customer password (atleast 1 capital letter, 1 special character (@, #, $, %), and 1 number. Minimum length - 8): ");
+			System.out.print("Enter customer password (atleast 1 capital letter, 1 special character (@, #, $, %), and 1 number. Minimum length - 6): ");
 			password = scanner.next();
 
 			isValidPassword = BankingSystemService.validatePassword(password);
@@ -446,7 +446,7 @@ public class BankingSystemCli {
 		}
 
 		while (!isValidTxnPwd) {
-			System.out.print("Enter customer transaction password (atleast 1 capital letter, 1 special character (@, #, $, %), and 1 number. Minimum length - 8): ");
+			System.out.print("Enter customer transaction password (atleast 1 capital letter, 1 special character (@, #, $, %), and 1 number. Minimum length - 6): ");
 			transactionPassword = scanner.next();
 
 			isValidTxnPwd = service.validateTxnPwd(transactionPassword);
@@ -1088,7 +1088,7 @@ public class BankingSystemCli {
 			String newPassword = null;
 			
 			while (!isValidPassword) {
-				System.out.print("Please enter new password (atleast 1 capital letter, 1 special character (@, #, $, %), and 1 number. Minimum length - 8): ");
+				System.out.print("Please enter new password (atleast 1 capital letter, 1 special character (@, #, $, %), and 1 number. Minimum length - 6): ");
 				newPassword = scanner.next();
 				
 				isValidPassword = BankingSystemService.validatePassword(newPassword);

@@ -34,7 +34,7 @@ import com.cg.BankingSystem.service.CustomerService;
 import com.cg.BankingSystem.service.CustomerServiceImpl;
 
 /**
- * @author admin
+ * @author Sayantan Sarkar
  *
  */
 public class BankingSystemCli {

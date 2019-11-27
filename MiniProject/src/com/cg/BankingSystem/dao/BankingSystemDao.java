@@ -43,7 +43,7 @@ public interface BankingSystemDao<T> {
 	
 	/**
 	 * An enum class which enumerates various SQL Queries which are used during DML, DQL operations in the DAO layer.
-	 * @author Swaroop Nath
+	 * @author Sayantan Sarkar
 	 */
 	public static enum Queries {
 		GET_TRANSACTIONS_QUERY ("SELECT * FROM transactions WHERE account_id = ?"), // Query to fetch transactions for a given accountNumber.

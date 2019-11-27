@@ -589,6 +589,7 @@ public class BankingSystemCli {
 				System.out.println("***********************************************");
 				System.out.println("Enter 1 to view mini-statement");
 				System.out.println("Enter 2 to view detailed-statement");
+				System.out.println("Enter 0 to go back");
 				System.out.println("***********************************************");
 				System.out.print("Enter your choice: ");
 				int statementChoice = scanner.nextInt();
@@ -600,8 +601,8 @@ public class BankingSystemCli {
 				case 2:
 					viewDetailedStatement(customer, service);
 					break;
-				case 3:
-					System.exit(0); // Write code to go back.
+				case 0:
+					 return;//System.exit(0); // Write code to go back.
 				default:
 					System.out.println("Invalid choice entered"); 
 				}

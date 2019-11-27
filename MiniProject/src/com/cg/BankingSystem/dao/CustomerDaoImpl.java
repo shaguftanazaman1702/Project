@@ -235,10 +235,10 @@ public class CustomerDaoImpl implements CustomerDao {
 			updateContactStmt.setString(1, newNumber);
 			// Setting account id for WHERE condition in sql statement
 			updateContactStmt.setLong(2, accountNumber);
-<<<<<<< HEAD
-=======
-			// executing the update statement
->>>>>>> a826178499a5b62a7509ba90de41ab3f00bc7546
+//<<<<<<< HEAD
+//=======
+//			// executing the update statement
+//>>>>>>> a826178499a5b62a7509ba90de41ab3f00bc7546
 
 			int rowsAffected = updateContactStmt.executeUpdate();
 

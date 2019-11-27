@@ -31,3 +31,84 @@
 =======
 2019-10-30-main-ERROR-com.cg.BankingSystem.dao.AdminDaoImpl:InternalServerException thrown is AdminDao.authenticateUser() method with cause: null
 >>>>>>> a826178499a5b62a7509ba90de41ab3f00bc7546
+2019-11-27-main-ERROR-com.cg.BankingSystem.dao.AdminDaoImpl:InternalServerException thrown is AdminDao.authenticateUser() method with cause: ORA-00942: table or view does not exist
+
+2019-11-27-main-ERROR-com.cg.BankingSystem.dao.AdminDaoImpl:InvalidCredentialsException thrown is AdminDao.authenticateUser() method with cause: Invalid Credentials! Please enter valid credentials.
+2019-11-27-main-ERROR-com.cg.BankingSystem.dao.AdminDaoImpl:InvalidCredentialsException thrown is AdminDao.authenticateUser() method with cause: Invalid Credentials! Please enter valid credentials.
+2019-11-27-main-ERROR-com.cg.BankingSystem.dao.AdminDaoImpl:InvalidCredentialsException thrown is AdminDao.authenticateUser() method with cause: Invalid Credentials! Please enter valid credentials.
+2019-11-27-main-ERROR-com.cg.BankingSystem.dao.AdminDaoImpl:InvalidCredentialsException thrown is AdminDao.authenticateUser() method with cause: Invalid Credentials! Please enter valid credentials.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:Admin logged in successfully at: 2019-11-27T15:46:26.406589600
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:Create new account method initiated in DAO Layer.
+2019-11-27-main-ERROR-com.cg.BankingSystem.dao.AdminDaoImpl:InternalServerException thrown is AdminDao.createNewAccount() method with cause: ORA-02289: sequence does not exist
+
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:Create new account method initiated in DAO Layer.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:AdminDao.createNewAccount(): New account added to account_master table for creating new account.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:AdminDao.createNewAccount(): User details for CC1234R entered in account_master table.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:AdminDao.createNewAccount(): New account added to customer table for creating new account.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:AdminDao.createNewAccount(): User details for CC1234R entered in customer table.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:AdminDao.createNewAccount(): New account added to user_table for creating new account.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:AdminDao.createNewAccount(): User details for CC1234R entered in user_table.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:Create new account method initiated in DAO Layer.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:AdminDao.createNewAccount(): New account added to account_master table for creating new account.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:AdminDao.createNewAccount(): User details for CC765 entered in account_master table.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:AdminDao.createNewAccount(): New account added to customer table for creating new account.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:AdminDao.createNewAccount(): User details for CC765 entered in customer table.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:AdminDao.createNewAccount(): New account added to user_table for creating new account.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:AdminDao.createNewAccount(): User details for CC765 entered in user_table.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:Create new account method initiated in DAO Layer.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:AdminDao.createNewAccount(): New account added to account_master table for creating new account.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:AdminDao.createNewAccount(): User details for CC1234N entered in account_master table.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:AdminDao.createNewAccount(): New account added to customer table for creating new account.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:AdminDao.createNewAccount(): User details for CC1234N entered in customer table.
+2019-11-27-main-ERROR-com.cg.BankingSystem.dao.AdminDaoImpl:AdminDao.createNewAccount(): User Details for CC1234N could not be updated in user_table. Rolling back from account_master and customer tables.
+2019-11-27-main-ERROR-com.cg.BankingSystem.dao.AdminDaoImpl:InternalServerException thrown is AdminDao.createNewAccount() method with cause: ORA-12899: value too large for column "BANKING"."USER_TABLE"."PASSWORD" (actual: 16, maximum: 15)
+
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:Admin logged in successfully at: 2019-11-27T16:17:24.281531700
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:Create new account method initiated in DAO Layer.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:AdminDao.createNewAccount(): New account added to account_master table for creating new account.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:AdminDao.createNewAccount(): User details for CC768S entered in account_master table.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:AdminDao.createNewAccount(): New account added to customer table for creating new account.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:AdminDao.createNewAccount(): User details for CC768S entered in customer table.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:AdminDao.createNewAccount(): New account added to user_table for creating new account.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:AdminDao.createNewAccount(): User details for CC768S entered in user_table.
+2019-11-27-main-ERROR-com.cg.BankingSystem.dao.AdminDaoImpl:UserNotFoundException thrown is AdminDao.findCustomer() method with cause: No users found with ID: CC123S
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:AdminDao.findCustomer(): Details fetched from user_table successfully.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:AdminDao.findCustomer(): Details fetched from customer and account_master tables successfully.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:AdminDao.saveExistingUser(): Adding new account into accounts_master table for existing user successful.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:AdminDao.findCustomer(): Details fetched from user_table successfully.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:AdminDao.findCustomer(): Details fetched from customer and account_master tables successfully.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:AdminDao.saveExistingUser(): Adding new account into accounts_master table for existing user successful.
+2019-11-27-main-ERROR-com.cg.BankingSystem.dao.AdminDaoImpl:NoTransactionsExistException thrown is AdminDao.listTransactions() method with cause: No transactions found for user: 1000000000
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.CustomerDaoImpl:Customer with user ID: CC768S logged in at: 2019-11-27T16:28:17.978374800
+2019-11-27-main-ERROR-com.cg.BankingSystem.dao.CustomerDaoImpl:InternalServerException thrown in CustomerDao.requestForCheckBook() method with cause: ORA-02289: sequence does not exist
+
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.CustomerDaoImpl:Successfully added new cheque book service request to service_tracker table in database, with service_id: 1
+2019-11-27-main-ERROR-com.cg.BankingSystem.dao.CustomerDaoImpl:NoTransactionsExistException thrown in CustomerDao.listTransactions() method with cause: No transactions found for user: 1000000002
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.CustomerDaoImpl:CustomerDao.addNewBeneficiary(): Successfully added beneficiary to beneficiary_details table in database, for: 1000000002
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.CustomerDaoImpl:InternalServerException thrown in CustomerDao.transferFund() with cause: Server Error, please try again later.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.CustomerDaoImpl:Customer CC768S updated password successfully.
+2019-11-27-main-ERROR-com.cg.BankingSystem.dao.AdminDaoImpl:InvalidCredentialsException thrown is AdminDao.authenticateUser() method with cause: Invalid Credentials! Please enter valid credentials.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:Admin logged in successfully at: 2019-11-27T16:42:31.259188100
+2019-11-27-main-ERROR-com.cg.BankingSystem.dao.AdminDaoImpl:NoTransactionsExistException thrown is AdminDao.listTransactions() method with cause: No transactions found for user: 10000000
+2019-11-27-main-ERROR-com.cg.BankingSystem.dao.AdminDaoImpl:NoTransactionsExistException thrown is AdminDao.listTransactions() method with cause: No transactions found for user: 1000000002
+2019-11-27-main-ERROR-com.cg.BankingSystem.dao.AdminDaoImpl:NoTransactionsExistException thrown is AdminDao.listTransactions() method with cause: No transactions found for user: 1000000000
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:Create new account method initiated in DAO Layer.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:AdminDao.createNewAccount(): New account added to account_master table for creating new account.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:AdminDao.createNewAccount(): User details for CCDAVID entered in account_master table.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:AdminDao.createNewAccount(): New account added to customer table for creating new account.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:AdminDao.createNewAccount(): User details for CCDAVID entered in customer table.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:AdminDao.createNewAccount(): New account added to user_table for creating new account.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.AdminDaoImpl:AdminDao.createNewAccount(): User details for CCDAVID entered in user_table.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.CustomerDaoImpl:Customer with user ID: CCDAVID logged in at: 2019-11-27T16:46:13.084021700
+2019-11-27-main-ERROR-com.cg.BankingSystem.dao.CustomerDaoImpl:AccountsNotFoundException thrown in CustomerDao.fetchOtherExistingAccount() method with cause: No Alternate account for this user.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.CustomerDaoImpl:CustomerDao.addNewBeneficiary(): Successfully added beneficiary to beneficiary_details table in database, for: 1000000003
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.CustomerDaoImpl:InternalServerException thrown in CustomerDao.transferFund() with cause: Server Error, please try again later.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.CustomerDaoImpl:InternalServerException thrown in CustomerDao.transferFund() with cause: Server Error, please try again later.
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.CustomerDaoImpl:CustomerDao.addNewBeneficiary(): Successfully added beneficiary to beneficiary_details table in database, for: 1000000003
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.CustomerDaoImpl:CustomerDao.transferFund(): 6000.0 debited from: 1000000003. Attempting crediting into: 1000000002
+2019-11-27-main-ERROR-com.cg.BankingSystem.dao.CustomerDaoImpl:InternalServerException thrown in CustomerDao.transferFund() method with cause: ORA-02289: sequence does not exist
+
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.CustomerDaoImpl:CustomerDao.transferFund(): 6000.0 debited from: 1000000003. Attempting crediting into: 1000000002
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.CustomerDaoImpl:CustomerDao.transferFund(): Transaction for amount: 6000.0 from: 1000000003 to: 1000000002 completed successfully at: 2019-11-27T17:04:07.794661500
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.CustomerDaoImpl:Customer with user ID: CCDAVID logged in at: 2019-11-27T17:10:33.854765900
+2019-11-27-main-INFO -com.cg.BankingSystem.dao.CustomerDaoImpl:Customer with user ID: CCDAVID logged in at: 2019-11-27T17:12:15.120053

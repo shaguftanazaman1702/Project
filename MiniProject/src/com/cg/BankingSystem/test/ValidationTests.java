@@ -33,10 +33,10 @@ public class ValidationTests {
 		assertNotNull(service);
 	}
 	
-	@Ignore
+	//@Ignore
 	@Test
 	public void testValidateName() {
-		assertTrue(service.validateName("Swaroop Nath"));
+		assertTrue(service.validateName("Sayantan Sarkar"));
 	}
 	
 	@Ignore

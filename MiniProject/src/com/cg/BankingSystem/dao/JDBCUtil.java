@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 /**
- * @author lenovo
+ * @author Sayantan Sarkar
  *
  */
 public class JDBCUtil {

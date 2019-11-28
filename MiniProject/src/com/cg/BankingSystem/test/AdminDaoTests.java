@@ -31,33 +31,27 @@ public class AdminDaoTests {
 		dao = new AdminDaoImpl();
 	}
 	
-	@Ignore
+	//@Ignore
 	@Test
 	public void testAuthentication() throws InvalidCredentialsException, InternalServerException {
 		LoginBean bean = new LoginBean();
-		bean.setUserId("AD123");
-		bean.setPassword("ABC123");
+		bean.setUserId("AD321");
+		bean.setPassword("ADmin@123");
 		
 		Admin admin = dao.authenticateUser(bean);
 		
 		System.out.println(admin.getUserId() + " " + admin.getUserName());
 	}
 	
-	@Ignore
+	//@Ignore
 	@Test
 	public void testTransactions() throws NoTransactionsExistException, InternalServerException {
-		List<Transaction> txns = dao.listTransactions(1010);
+		List<Transaction> txns = dao.listTransactions(1000000002);
 		for (Transaction txn: txns)
 			System.out.println(txns);
 	}
 	
-	@Ignore
-	@Test
-	public void testUpdation() throws InternalServerException {
-		System.out.println(dao.updatePassword("HelloNew", "AD123"));
-	}
-	
-	@Ignore
+	//@Ignore
 	@Test
 	public void testCreation() throws InternalServerException, AccountNotCreatedException {
 		SignUp newUser = new SignUp();
@@ -74,14 +68,13 @@ public class AdminDaoTests {
 		
 		System.out.println(dao.createNewAccount(newUser));
 	}
-	
-//	@Ignore
+	//@Ignore
 	@Test
 	public void testFindCustomer() throws InternalServerException, UserNotFoundException {
-		System.out.println(dao.findCustomer("CC123"));
+		System.out.println(dao.findCustomer("CC1234R"));
 	}
 	
-	@Ignore
+	//@Ignore
 	@Test
 	public void testSaveExistingUser() throws UserNotFoundException, MaxAccountsDefinedForUserException, InternalServerException {
 		Customer existingCustomer = dao.findCustomer("CC185");

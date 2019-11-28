@@ -500,12 +500,13 @@ public class BankingSystemCli {
 
 				System.out.println("List of transactions --");
 
-				System.out.println("Account No.\t" + "Transaction ID\t" + "Transaction Date\t" + "Transaction Amount\t"
-						+ "Transaction Type\t" + "Transaction Description");
+//				System.out.println("Account No.\t" + "Transaction ID\t" + "Transaction Date\t" + "Transaction Amount\t"
+//						+ "Transaction Type\t" + "Transaction Description");
 
 				for (Transaction txn : transactions)
 					System.out.println(txn);
 
+				System.out.println();
 				// Testing Done completely
 			} catch (InputMismatchException e) {
 				System.out.println("Please enter a valid input");
